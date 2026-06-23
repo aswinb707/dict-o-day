@@ -1,0 +1,233 @@
+.word-detail-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.back-to-nav-btn {
+  align-self: flex-start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.back-to-nav-btn:hover {
+  background: var(--surface-2);
+  color: var(--text-1);
+  transform: translateX(-2px);
+}
+
+/* Floating circle button at the corner of the word page */
+.corner-ai-btn {
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--amber);
+  color: #fff;
+  border: none;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(239, 159, 39, 0.4);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10;
+}
+
+.corner-ai-btn:hover {
+  transform: scale(1.15) rotate(15deg);
+  background: var(--amber-dark);
+  box-shadow: 0 6px 16px rgba(186, 117, 23, 0.6);
+}
+
+.word-detail-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.word-detail-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 20px;
+}
+
+.header-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.audio-speak-btn {
+  background: var(--amber-light);
+  border: none;
+  color: var(--amber-dark);
+  font-size: 16px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.audio-speak-btn:hover {
+  background: var(--amber);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.word-detail-title {
+  font-size: 38px;
+  font-weight: 800;
+  color: var(--text-1);
+  letter-spacing: -1px;
+}
+
+.word-detail-pron {
+  font-size: 15px;
+  color: var(--text-3);
+  margin-top: 4px;
+}
+
+.word-detail-section h3 {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-3);
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.detail-meaning {
+  font-size: 18px;
+  color: var(--text-1);
+  line-height: 1.6;
+}
+
+.thesaurus-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.thesaurus-box {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 18px;
+  border: 1px solid var(--border);
+}
+
+.syn-ant-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.thesaurus-pill {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+}
+
+.thesaurus-pill.synonym {
+  background: rgba(99, 153, 34, 0.1);
+  color: var(--green);
+}
+
+.thesaurus-pill.antonym {
+  background: rgba(226, 75, 74, 0.1);
+  color: var(--red);
+}
+
+.sentences-sec {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+}
+
+.sentences-list {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sentence-item {
+  font-size: 15px;
+  color: var(--text-2);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.mastery-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.mastery-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-2);
+}
+
+.mastery-progress-track {
+  height: 8px;
+  background: var(--bg);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.mastery-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .thesaurus-row {
+    grid-template-columns: 1fr;
+  }
+  .word-detail-title {
+    font-size: 30px;
+  }
+  .corner-ai-btn {
+    top: 50px;
+  }
+}
