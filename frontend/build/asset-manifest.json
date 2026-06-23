@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.81d2df83.css",
+    "main.js": "/static/js/main.5a637a16.js",
+    "static/js/453.c0ebaad2.chunk.js": "/static/js/453.c0ebaad2.chunk.js",
+    "static/media/dict-o-day.png": "/static/media/dict-o-day.d2d63cf0ef65575aa074.png",
+    "index.html": "/index.html",
+    "main.81d2df83.css.map": "/static/css/main.81d2df83.css.map",
+    "main.5a637a16.js.map": "/static/js/main.5a637a16.js.map",
+    "453.c0ebaad2.chunk.js.map": "/static/js/453.c0ebaad2.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.81d2df83.css",
+    "static/js/main.5a637a16.js"
+  ]
+}
