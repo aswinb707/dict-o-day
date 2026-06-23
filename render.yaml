@@ -1,0 +1,74 @@
+services:
+  # 1. PostgreSQL Database
+  - type: pgo
+    name: dict-o-day-db
+    databaseName: dictoday
+    user: postgres
+    plan: free
+    region: oregon
+
+  # 2. Redis Instance
+  - type: redis
+    name: dict-o-day-redis
+    plan: free
+    region: oregon
+    ipAllowList: []
+
+  # 3. Spring Boot Backend
+  - type: web
+    name: dict-o-day-backend
+    env: docker
+    region: oregon
+    plan: free
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: dict-o-day-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: dict-o-day-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: dict-o-day-db
+          property: password
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: dict-o-day-redis
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GROQ_API_KEY
+        sync: false
+      - key: MIDDLEWARE_URL
+        value: https://dict-o-day-middleware.onrender.com
+
+  # 4. FastAPI Middleware
+  - type: web
+    name: dict-o-day-middleware
+    env: docker
+    region: oregon
+    plan: free
+    dockerContext: ./middleware
+    dockerfilePath: ./middleware/Dockerfile
+    envVars:
+      - key: SPRING_BOOT_URL
+        value: https://dict-o-day-backend.onrender.com
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: dict-o-day-redis
+          property: connectionString
+      - key: JWT_SECRET
+        fromService:
+          type: web
+          name: dict-o-day-backend
+          property: JWT_SECRET
+      - key: GROQ_API_KEY
+        sync: false

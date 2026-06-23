@@ -1,71 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Dashboard.css";
-
-const STREAK_DAYS = [
-  { day: "Mon", done: true },
-  { day: "Tue", done: true },
-  { day: "Wed", done: true },
-  { day: "Thu", done: true },
-  { day: "Fri", done: false },
-  { day: "Sat", done: false },
-  { day: "Sun", done: false, today: true },
-];
-
-const CHART_DATA = [
-  { label: "Mon", words: 8 },
-  { label: "Tue", words: 12 },
-  { label: "Wed", words: 6 },
-  { label: "Thu", words: 15 },
-  { label: "Fri", words: 10 },
-  { label: "Sat", words: 13 },
-  { label: "Sun", words: 14 },
-];
-
-const TODAY_WORDS = [
-  {
-    id: 1,
-    word: "Ephemeral",
-    pos: "Adjective",
-    definition: "Lasting for a very short time.",
-    sentence: "The ephemeral beauty of cherry blossoms draws millions each spring.",
-    pronunciation: "ih-FEM-er-ul",
-    mastery: 82,
-  },
-  {
-    id: 2,
-    word: "Laconic",
-    pos: "Adjective",
-    definition: "Using very few words; brief and concise.",
-    sentence: "His laconic reply told me everything I needed to know.",
-    pronunciation: "luh-KON-ik",
-    mastery: 65,
-  },
-  {
-    id: 3,
-    word: "Sanguine",
-    pos: "Adjective",
-    definition: "Optimistic, especially in a difficult situation.",
-    sentence: "She remained sanguine despite the setbacks.",
-    pronunciation: "SANG-gwin",
-    mastery: 45,
-  },
-  {
-    id: 4,
-    word: "Mellifluous",
-    pos: "Adjective",
-    definition: "Sweet or musical; pleasant to hear.",
-    sentence: "The mellifluous voice of the singer filled the hall.",
-    pronunciation: "meh-LIF-loo-us",
-    mastery: 30,
-  },
-];
-
-const STATS = [
-  { label: "Day streak", value: "4", icon: "🔥" },
-  { label: "Words learned", value: "138", icon: "📚" },
-  { label: "Test accuracy", value: "87%", icon: "🎯" },
-  { label: "This week", value: "78", icon: "📅" },
-];
 
 function MasteryBar({ pct }) {
   const color =
@@ -81,7 +15,7 @@ function MasteryBar({ pct }) {
 }
 
 function SparkLine({ data }) {
-  const max = Math.max(...data.map((d) => d.words));
+  const max = Math.max(...data.map((d) => d.words), 1);
   const W = 560, H = 90, PAD = 12;
   const pts = data.map((d, i) => {
     const x = PAD + (i / (data.length - 1)) * (W - PAD * 2);
@@ -110,12 +44,256 @@ function SparkLine({ data }) {
   );
 }
 
-export default function Dashboard() {
+export default function Dashboard({ onLogout }) {
   const [activeNav, setActiveNav] = useState("home");
   const [flipped, setFlipped] = useState({});
 
-  const toggleFlip = (id) =>
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("dod_user")) || { username: "Alex R.", difficulty: "Intermediate" };
+    } catch (e) {
+      return { username: "Alex R.", difficulty: "Intermediate" };
+    }
+  });
+
+  const [session, setSession] = useState(null);
+  const [words, setWords] = useState([]);
+  const [masteryMap, setMasteryMap] = useState({});
+  const [stats, setStats] = useState([
+    { label: "Day streak", value: "0", icon: "🔥" },
+    { label: "Words learned", value: "0", icon: "📚" },
+    { label: "Test accuracy", value: "100%", icon: "🎯" },
+    { label: "This week", value: "0", icon: "📅" },
+  ]);
+
+  const [chartData, setChartData] = useState([
+    { label: "Mon", words: 0 },
+    { label: "Tue", words: 0 },
+    { label: "Wed", words: 0 },
+    { label: "Thu", words: 0 },
+    { label: "Fri", words: 0 },
+    { label: "Sat", words: 0 },
+    { label: "Sun", words: 0 },
+  ]);
+
+  const [streakDays, setStreakDays] = useState([
+    { day: "Mon", done: false },
+    { day: "Tue", done: false },
+    { day: "Wed", done: false },
+    { day: "Thu", done: false },
+    { day: "Fri", done: false },
+    { day: "Sat", done: false },
+    { day: "Sun", done: false },
+  ]);
+
+  const [streakMessage, setStreakMessage] = useState("");
+
+  const capitalize = (str) => str ? str.charAt(0).toUpperCase() + str.slice(1) : "";
+
+  const fetchWithAuth = (url, options = {}) => {
+    const token = localStorage.getItem("dod_token");
+    const headers = {
+      "Content-Type": "application/json",
+      ...options.headers,
+    };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    return fetch(url, { ...options, headers }).then(async (res) => {
+      const data = await res.json();
+      if (!res.ok) {
+        if (res.status === 401 && onLogout) {
+          onLogout();
+        }
+        throw new Error(data.message || data.detail || "Request failed.");
+      }
+      return data.data !== undefined ? data.data : data;
+    });
+  };
+
+  const loadDashboardData = () => {
+    // 1. Fetch profile
+    fetchWithAuth("http://localhost:8000/api/users/me")
+      .then((profile) => {
+        setUser(profile);
+        localStorage.setItem("dod_user", JSON.stringify(profile));
+      })
+      .catch((e) => console.error("Error fetching profile", e));
+
+    // 2. Fetch daily streak
+    fetchWithAuth("http://localhost:8000/api/users/me/streak")
+      .then((streakInfo) => {
+        const streak = streakInfo.streakCount || 0;
+        setStats((prev) =>
+          prev.map((s) => (s.label === "Day streak" ? { ...s, value: streak.toString() } : s))
+        );
+      })
+      .catch((e) => console.error("Error fetching streak", e));
+
+    // 3. Start daily session
+    fetchWithAuth("http://localhost:8000/api/sessions/start", { method: "POST" })
+      .then((sess) => {
+        setSession(sess);
+        // If session is already completed, pre-flip all cards visually
+        if (sess && sess.completed) {
+          // Fetch today's words and then set all flipped
+          fetchWithAuth("http://localhost:8000/api/words/today")
+            .then((todayWords) => {
+              setWords(todayWords || []);
+              const newFlipped = {};
+              todayWords.forEach((w) => {
+                newFlipped[w.id] = true;
+              });
+              setFlipped(newFlipped);
+            });
+        } else {
+          // Fetch today's words
+          fetchWithAuth("http://localhost:8000/api/words/today")
+            .then((todayWords) => {
+              setWords(todayWords || []);
+            });
+        }
+
+        // Fetch learned words (for mastery mapping)
+        return fetchWithAuth("http://localhost:8000/api/words/learned");
+      })
+      .then((learnedProgress) => {
+        const map = {};
+        if (learnedProgress && Array.isArray(learnedProgress)) {
+          learnedProgress.forEach((p) => {
+            map[p.wordId] = Math.round((p.masteryScore || 0) * 100);
+          });
+        }
+        setMasteryMap(map);
+      })
+      .catch((e) => console.error("Error initializing session/words", e));
+
+    // 4. Fetch analytics
+    fetchWithAuth("http://localhost:8000/api/users/me/analytics")
+      .then((analytics) => {
+        const totalLearned = analytics.totalWordsStudied || 0;
+        setStats((prev) =>
+          prev.map((s) => (s.label === "Words learned" ? { ...s, value: totalLearned.toString() } : s))
+        );
+
+        const history = analytics.calendarHistory || [];
+        const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+        const today = new Date();
+
+        const weeklyWords = {};
+        const streakDaysCompleted = {};
+        let thisWeekSum = 0;
+
+        daysOfWeek.forEach((d) => {
+          weeklyWords[d] = 0;
+          streakDaysCompleted[d] = false;
+        });
+
+        history.forEach((h) => {
+          const entryDate = new Date(h.entryDate);
+          const diffTime = Math.abs(today - entryDate);
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          if (diffDays <= 7) {
+            const dayName = entryDate.toLocaleDateString("en-US", { weekday: "short" });
+            weeklyWords[dayName] = (weeklyWords[dayName] || 0) + (h.wordsCount || 0);
+            if (h.streakMaintained) {
+              streakDaysCompleted[dayName] = true;
+            }
+            thisWeekSum += (h.wordsCount || 0);
+          }
+        });
+
+        setStats((prev) =>
+          prev.map((s) => (s.label === "This week" ? { ...s, value: thisWeekSum.toString() } : s))
+        );
+
+        setChartData(
+          daysOfWeek.map((d) => ({
+            label: d,
+            words: weeklyWords[d] || 0,
+          }))
+        );
+
+        const todayName = today.toLocaleDateString("en-US", { weekday: "short" });
+        setStreakDays(
+          daysOfWeek.map((d) => ({
+            day: d,
+            done: streakDaysCompleted[d],
+            today: d === todayName,
+          }))
+        );
+
+        const missingDays = daysOfWeek.filter((d) => !streakDaysCompleted[d] && d !== todayName).length;
+        if (missingDays === 0) {
+          setStreakMessage("Perfect week! Amazing job! 🎉");
+        } else {
+          setStreakMessage("Keep it up! Make sure to learn every day for a perfect week.");
+        }
+      })
+      .catch((e) => console.error("Error fetching analytics", e));
+
+    // 5. Fetch test history
+    fetchWithAuth("http://localhost:8000/api/tests/history")
+      .then((history) => {
+        if (history && history.length > 0) {
+          const sum = history.reduce((acc, t) => acc + (t.scorePct || 0), 0);
+          const avg = Math.round(sum / history.length);
+          setStats((prev) =>
+            prev.map((s) => (s.label === "Test accuracy" ? { ...s, value: `${avg}%` } : s))
+          );
+        } else {
+          setStats((prev) =>
+            prev.map((s) => (s.label === "Test accuracy" ? { ...s, value: "100%" } : s))
+          );
+        }
+      })
+      .catch((e) => console.error("Error fetching test history", e));
+  };
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
+  const completeDailySession = (currentSessionId) => {
+    fetchWithAuth(`http://localhost:8000/api/sessions/${currentSessionId}/complete`, {
+      method: "POST",
+    })
+      .then((updatedSess) => {
+        setSession(updatedSess);
+        loadDashboardData();
+      })
+      .catch((e) => console.error("Error completing session", e));
+  };
+
+  const toggleFlip = (id) => {
     setFlipped((prev) => ({ ...prev, [id]: !prev[id] }));
+
+    if (!flipped[id] && session && !session.completed) {
+      fetchWithAuth(`http://localhost:8000/api/sessions/${session.id}/word-seen`, {
+        method: "POST",
+        body: JSON.stringify({ wordId: id }),
+      })
+      .then(() => {
+        return fetchWithAuth("http://localhost:8000/api/words/learned");
+      })
+      .then((learnedProgress) => {
+        const map = {};
+        if (learnedProgress && Array.isArray(learnedProgress)) {
+          learnedProgress.forEach((p) => {
+            map[p.wordId] = Math.round((p.masteryScore || 0) * 100);
+          });
+        }
+        setMasteryMap(map);
+
+        const updatedFlipped = { ...flipped, [id]: true };
+        const allFlipped = words.every((w) => updatedFlipped[w.id]);
+        if (allFlipped) {
+          completeDailySession(session.id);
+        }
+      })
+      .catch((e) => console.error("Error marking word seen", e));
+    }
+  };
 
   return (
     <div className="dod-root">
@@ -144,11 +322,18 @@ export default function Dashboard() {
           ))}
         </nav>
         <div className="sidebar-bottom">
-          <div className="user-pill">
-            <div className="user-avatar">A</div>
+          <div
+            className="user-pill"
+            onClick={onLogout}
+            style={{ cursor: "pointer" }}
+            title="Click to Log out"
+          >
+            <div className="user-avatar">
+              {user.username ? user.username.charAt(0).toUpperCase() : "U"}
+            </div>
             <div className="user-info">
-              <span className="user-name">Alex R.</span>
-              <span className="user-level">Intermediate</span>
+              <span className="user-name">{user.username}</span>
+              <span className="user-level">{capitalize(user.difficulty)}</span>
             </div>
           </div>
         </div>
@@ -159,13 +344,19 @@ export default function Dashboard() {
         {/* Top bar */}
         <header className="topbar">
           <div className="topbar-left">
-            <h1 className="page-title">Good morning, Alex ☀️</h1>
-            <p className="page-sub">You have 10 new words waiting today</p>
+            <h1 className="page-title">Good morning, {user.username} ☀️</h1>
+            <p className="page-sub">
+              {session && session.completed
+                ? "You have completed today's vocabulary training!"
+                : `You have ${words.length} new words waiting today`}
+            </p>
           </div>
           <div className="topbar-right">
             <div className="streak-badge">
               <span className="streak-fire">🔥</span>
-              <span className="streak-num">4</span>
+              <span className="streak-num">
+                {stats.find((s) => s.label === "Day streak")?.value || "0"}
+              </span>
               <span className="streak-label">day streak</span>
             </div>
           </div>
@@ -173,7 +364,7 @@ export default function Dashboard() {
 
         {/* Stats row */}
         <section className="stats-row">
-          {STATS.map((s) => (
+          {stats.map((s) => (
             <div className="stat-card" key={s.label}>
               <span className="stat-icon">{s.icon}</span>
               <span className="stat-value">{s.value}</span>
@@ -187,14 +378,16 @@ export default function Dashboard() {
           <div className="chart-card">
             <div className="card-header">
               <span className="card-title">Learning this week</span>
-              <span className="card-badge">78 words</span>
+              <span className="card-badge">
+                {stats.find((s) => s.label === "This week")?.value || "0"} words
+              </span>
             </div>
             <div className="chart-labels">
-              {CHART_DATA.map((d) => (
+              {chartData.map((d) => (
                 <span key={d.label} className="chart-label">{d.label}</span>
               ))}
             </div>
-            <SparkLine data={CHART_DATA} />
+            <SparkLine data={chartData} />
           </div>
 
           <div className="streak-card">
@@ -202,7 +395,7 @@ export default function Dashboard() {
               <span className="card-title">This week</span>
             </div>
             <div className="streak-row">
-              {STREAK_DAYS.map((d) => (
+              {streakDays.map((d) => (
                 <div key={d.day} className="streak-day">
                   <div
                     className={`streak-circle ${d.done ? "done" : ""} ${d.today ? "today" : ""}`}
@@ -213,21 +406,31 @@ export default function Dashboard() {
                 </div>
               ))}
             </div>
-            <p className="streak-message">Keep it up! 3 more days for a perfect week.</p>
+            <p className="streak-message">{streakMessage}</p>
           </div>
         </section>
 
         {/* Action buttons */}
         <section className="action-row">
-          <button className="action-btn primary">
+          <button
+            className="action-btn primary"
+            onClick={() => {
+              if (session && !session.completed) {
+                // If not completed, complete the session on click as start learning action
+                completeDailySession(session.id);
+              } else {
+                alert("Today's session is already completed!");
+              }
+            }}
+          >
             <span className="action-icon">✦</span>
-            Start learning
+            {session && session.completed ? "Session completed" : "Start learning"}
           </button>
-          <button className="action-btn secondary">
+          <button className="action-btn secondary" onClick={() => alert("Tests page integration coming soon!")}>
             <span className="action-icon">◎</span>
             Take a test
           </button>
-          <button className="action-btn secondary">
+          <button className="action-btn secondary" onClick={() => alert("AI tutor integration coming soon!")}>
             <span className="action-icon">🤖</span>
             AI tutor
           </button>
@@ -237,40 +440,45 @@ export default function Dashboard() {
         <section className="words-section">
           <div className="section-header">
             <h2 className="section-title">Today's words</h2>
-            <span className="section-pill">10 words · 4 previewed</span>
+            <span className="section-pill">
+              {words.length} words · {Object.keys(flipped).length} previewed
+            </span>
           </div>
           <div className="words-grid">
-            {TODAY_WORDS.map((w) => (
-              <div
-                key={w.id}
-                className={`word-card${flipped[w.id] ? " flipped" : ""}`}
-                onClick={() => toggleFlip(w.id)}
-              >
-                <div className="word-card-inner">
-                  {/* Front */}
-                  <div className="word-face front">
-                    <div className="word-top">
-                      <span className="pos-tag">{w.pos}</span>
-                      <span className="flip-hint">tap to flip</span>
+            {words.map((w) => {
+              const mastery = masteryMap[w.id] || 0;
+              return (
+                <div
+                  key={w.id}
+                  className={`word-card${flipped[w.id] ? " flipped" : ""}`}
+                  onClick={() => toggleFlip(w.id)}
+                >
+                  <div className="word-card-inner">
+                    {/* Front */}
+                    <div className="word-face front">
+                      <div className="word-top">
+                        <span className="pos-tag">{capitalize(w.partOfSpeech)}</span>
+                        <span className="flip-hint">tap to flip</span>
+                      </div>
+                      <h3 className="word-title">{w.word}</h3>
+                      <p className="word-pron">/{w.pronunciation}/</p>
+                      <div className="word-mastery">
+                        <span className="mastery-label">Mastery</span>
+                        <span className="mastery-pct">{mastery}%</span>
+                      </div>
+                      <MasteryBar pct={mastery} />
                     </div>
-                    <h3 className="word-title">{w.word}</h3>
-                    <p className="word-pron">/{w.pronunciation}/</p>
-                    <div className="word-mastery">
-                      <span className="mastery-label">Mastery</span>
-                      <span className="mastery-pct">{w.mastery}%</span>
+                    {/* Back */}
+                    <div className="word-face back">
+                      <span className="pos-tag">{capitalize(w.partOfSpeech)}</span>
+                      <h3 className="word-title back-word">{w.word}</h3>
+                      <p className="word-def">{w.definition}</p>
+                      <p className="word-sentence">"{w.inASentence}"</p>
                     </div>
-                    <MasteryBar pct={w.mastery} />
-                  </div>
-                  {/* Back */}
-                  <div className="word-face back">
-                    <span className="pos-tag">{w.pos}</span>
-                    <h3 className="word-title back-word">{w.word}</h3>
-                    <p className="word-def">{w.definition}</p>
-                    <p className="word-sentence">"{w.sentence}"</p>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
       </main>

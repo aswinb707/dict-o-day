@@ -57,6 +57,7 @@ export default function Login({ onLogin, onRegister }) {
     username: "",
     email: "",
     dob: "",
+    password: "",
     difficulty: "",
     wordCount: 5,
   });
@@ -75,6 +76,7 @@ export default function Login({ onLogin, onRegister }) {
     if (!registerForm.username.trim()) e.username = "Username is required";
     if (!registerForm.email.includes("@")) e.email = "Enter a valid email";
     if (!registerForm.dob) e.dob = "Date of birth is required";
+    if (!registerForm.password || registerForm.password.length < 6) e.password = "Password must be at least 6 characters";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -87,10 +89,36 @@ export default function Login({ onLogin, onRegister }) {
     setErrors(e2);
     if (Object.keys(e2).length) return;
     setLoading(true);
-    setTimeout(() => {
+    fetch("http://localhost:8000/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: loginForm.email,
+        password: loginForm.password
+      })
+    })
+    .then(async (res) => {
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || data.detail || "Invalid email or password.");
+      }
+      return data;
+    })
+    .then((data) => {
       setLoading(false);
-      if (onLogin) onLogin();
-    }, 1400);
+      if (data.accessToken) {
+        localStorage.setItem("dod_token", data.accessToken);
+        localStorage.setItem("dod_refresh_token", data.refreshToken);
+        localStorage.setItem("dod_user", JSON.stringify(data.user));
+        if (onLogin) onLogin();
+      } else {
+        setErrors({ general: "Login failed." });
+      }
+    })
+    .catch((err) => {
+      setLoading(false);
+      setErrors({ general: err.message });
+    });
   };
 
   const handleRegisterSubmit = (e) => {
@@ -104,11 +132,42 @@ export default function Login({ onLogin, onRegister }) {
     setErrors(e2);
     if (Object.keys(e2).length) return;
     setLoading(true);
-    setTimeout(() => {
+
+    const diffMap = { "Easy": "beginner", "Medium": "intermediate", "Hard": "advanced" };
+    fetch("http://localhost:8000/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: registerForm.username,
+        email: registerForm.email,
+        password: registerForm.password,
+        dob: registerForm.dob || null,
+        difficulty: diffMap[registerForm.difficulty] || "beginner",
+        wordCount: parseInt(registerForm.wordCount) || 5
+      })
+    })
+    .then(async (res) => {
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || data.detail || "Registration failed.");
+      }
+      return data;
+    })
+    .then((data) => {
       setLoading(false);
-      if (onRegister) onRegister(registerForm.username);
-      else if (onLogin) onLogin();
-    }, 1400);
+      if (data.accessToken) {
+        localStorage.setItem("dod_token", data.accessToken);
+        localStorage.setItem("dod_refresh_token", data.refreshToken);
+        localStorage.setItem("dod_user", JSON.stringify(data.user));
+        if (onLogin) onLogin();
+      } else {
+        setErrors({ general: "Registration failed." });
+      }
+    })
+    .catch((err) => {
+      setLoading(false);
+      setErrors({ general: err.message });
+    });
   };
 
   return (
@@ -193,6 +252,12 @@ export default function Login({ onLogin, onRegister }) {
                 <p className="form-sub">Log in to continue your streak</p>
               </div>
 
+              {errors.general && (
+                <div style={{ color: "#E24B4A", marginBottom: "1rem", fontSize: "0.875rem", textAlign: "center" }}>
+                  {errors.general}
+                </div>
+              )}
+
               <Field
                 label="Email"
                 id="l-email"
@@ -242,6 +307,12 @@ export default function Login({ onLogin, onRegister }) {
                 </p>
               </div>
 
+              {errors.general && (
+                <div style={{ color: "#E24B4A", marginBottom: "1rem", fontSize: "0.875rem", textAlign: "center" }}>
+                  {errors.general}
+                </div>
+              )}
+
               {step === 1 && (
                 <>
                   <Field
@@ -270,6 +341,16 @@ export default function Login({ onLogin, onRegister }) {
                     value={registerForm.dob}
                     onChange={(v) => setReg("dob", v)}
                     error={errors.dob}
+                  />
+
+                  <Field
+                    label="Password"
+                    id="r-pass"
+                    type="password"
+                    value={registerForm.password}
+                    onChange={(v) => setReg("password", v)}
+                    error={errors.password}
+                    placeholder="At least 6 characters"
                   />
                 </>
               )}
