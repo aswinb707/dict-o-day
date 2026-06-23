@@ -1,0 +1,277 @@
+.calendar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.calendar-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.calendar-sub {
+  font-size: 14px;
+  color: var(--text-2);
+  margin-top: 4px;
+}
+
+.calendar-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+}
+
+.calendar-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.calendar-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.month-year-label {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.calendar-nav-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.cal-nav-btn {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.cal-nav-btn:hover {
+  background: var(--surface-2);
+  color: var(--text-1);
+}
+
+.calendar-grid-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+}
+
+.calendar-grid-cells {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.calendar-cell {
+  position: relative;
+  aspect-ratio: 1.1;
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.calendar-cell.empty {
+  background: transparent;
+  cursor: default;
+}
+
+.calendar-cell:not(.empty):hover {
+  border-color: var(--text-3);
+  transform: translateY(-1px);
+}
+
+.day-number {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.calendar-cell.streak-active {
+  background: var(--amber-light);
+  border-color: rgba(239, 159, 39, 0.2);
+}
+
+.calendar-cell.streak-active .day-number {
+  color: var(--amber-dark);
+  font-weight: 700;
+}
+
+.streak-indicator {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 11px;
+}
+
+.calendar-cell.today-cell {
+  border-color: var(--amber);
+}
+
+.calendar-cell.selected-cell {
+  border-color: var(--text-1);
+  background: var(--surface-2);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.calendar-cell.selected-cell.streak-active {
+  background: var(--amber-light);
+}
+
+/* Streak side panels */
+.streak-summary-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.streak-stats-card, .day-detail-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--shadow-card);
+}
+
+.streak-stats-card h3, .day-detail-card h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-1);
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+
+.streak-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.streak-stat {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.streak-stat .stat-num {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--amber-dark);
+}
+
+.streak-stat .stat-lbl {
+  font-size: 11px;
+  color: var(--text-3);
+  font-weight: 600;
+}
+
+.streak-meta-msg {
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+
+.day-words-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.day-words-desc {
+  font-size: 13px;
+  color: var(--text-2);
+  font-weight: 500;
+}
+
+.day-word-pill {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+}
+
+.dw-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.dw-pos {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--amber-dark);
+  background: var(--amber-light);
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+
+.no-day-activity {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.5;
+}
+
+.empty-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-3);
+  flex: 1;
+}
+
+.calendar-prompt-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.empty-detail p {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@media (max-width: 1024px) {
+  .calendar-layout {
+    grid-template-columns: 1fr;
+  }
+}
