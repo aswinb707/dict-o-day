@@ -1,13 +1,5 @@
 services:
-  # 1. PostgreSQL Database
-  - type: pgo
-    name: dict-o-day-db
-    databaseName: dictoday
-    user: postgres
-    plan: free
-    region: oregon
-
-  # 2. Redis Instance
+  # 1. Redis Instance
   - type: redis
     name: dict-o-day-redis
     plan: free
@@ -72,3 +64,11 @@ services:
           property: JWT_SECRET
       - key: GROQ_API_KEY
         sync: false
+
+databases:
+  - name: dict-o-day-db
+    databaseName: dictoday
+    user: postgres
+    plan: free
+    region: oregon
+
