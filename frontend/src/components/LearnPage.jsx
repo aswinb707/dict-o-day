@@ -18,10 +18,10 @@ function getUniqueCardStyle(wordData) {
   for (let i = 0; i < wordStr.length; i++) {
     hash = wordStr.charCodeAt(i) + ((hash << 5) - hash);
   }
-  
+
   const hue1 = Math.abs(hash) % 360;
   const hue2 = (hue1 + 40) % 360;
-  
+
   return {
     background: `linear-gradient(135deg, hsl(${hue1}, 75%, 20%) 0%, hsl(${hue2}, 70%, 15%) 100%)`,
     border: "1px solid rgba(255, 255, 255, 0.15)",
@@ -34,7 +34,7 @@ const generateQuizForWord = (word, pool) => {
   const isFused = !!word.fusedWord;
   const wordToTest = isFused ? word.fusedWord : word.word;
   const correctDefinition = isFused ? word.fusedDefinition : word.definition;
-  
+
   // Get other definitions from pool
   const otherDefs = pool
     .filter(w => w.id !== word.id)
@@ -63,7 +63,7 @@ const generateQuizForWord = (word, pool) => {
     }
     i++;
   }
-  
+
   const optionsQ1 = [correctDefinition, distractorsQ1[0] || defaultDistractors[0], distractorsQ1[1] || defaultDistractors[1]].sort(() => Math.random() - 0.5);
   const q1 = {
     questionText: `What is the correct definition of "${wordToTest}"?`,
@@ -83,7 +83,7 @@ const generateQuizForWord = (word, pool) => {
       .map(w => w.synonyms)
       .filter(s => s && s !== "N/A")
       .map(s => s.split(",")[0].trim());
-    
+
     const defaultSyns = ["happy", "careful", "brave", "rapid", "stubborn", "clear"];
     const distractorsQ2 = [];
     for (let s of otherSyns) {
@@ -124,7 +124,7 @@ const generateQuizForWord = (word, pool) => {
     .filter(w => w.id !== word.id)
     .map(w => `/${w.fusedPronunciation || w.pronunciation}/`)
     .filter(p => p !== correctPron);
-  
+
   const defaultProns = ["/æpl/", "/kɑːr/", "/hæpi/", "/wɔːtər/", "/rɪˈzɪliənt/"];
   const distractorsQ3 = [];
   for (let p of otherProns) {
@@ -193,7 +193,7 @@ export default function LearnPage({ wordsPool = [], onMarkLearned, onWordSelect 
         }
         const text = finalTranscript || interimTranscript;
         setSpeechTranscript(text);
-        
+
         if (text) {
           const cleanText = text.toLowerCase().replace(/[^a-z]/g, "");
           const cleanWord = activeWord.word.toLowerCase().replace(/[^a-z]/g, "");
@@ -334,113 +334,116 @@ export default function LearnPage({ wordsPool = [], onMarkLearned, onWordSelect 
   if (showQuiz && questionsList.length > 0) {
     if (quizStep === 3) {
       return (
-        <div className="learn-container animate-fade-in">
-          <header className="learn-header">
-            <div>
-              <h1 className="learn-title">Mastery Check</h1>
-              <p className="learn-sub">Complete this pronunciation practice to mark "{activeWord.word}" as learned</p>
-            </div>
-            <span className="learn-progress-indicator">
-              Question 4 of 4
-            </span>
-          </header>
-
-          <div className="learn-card-workspace">
-            <div className="quiz-card">
-              <div className="quiz-header">
-                <span className="quiz-header-title">Pronunciation Check</span>
-                <button className="quiz-cancel-btn" onClick={() => { setShowQuiz(false); stopListening(); }}>
-                  ✕ Exit Quiz
-                </button>
+        <div className="root">
+          <div className="learn-container animate-fade-in">
+            <header className="learn-header">
+              <div>
+                <h1 className="learn-title">Mastery Check</h1>
+                <p className="learn-sub">Complete this pronunciation practice to mark "{activeWord.word}" as learned</p>
               </div>
-              
-              <div className="quiz-question-container" style={{ textAlign: "center", padding: "20px" }}>
-                <p className="quiz-question-text" style={{ fontSize: "18px", marginBottom: "8px" }}>
-                  Pronounce the word aloud:
-                </p>
-                <h2 style={{ fontSize: "36px", color: "var(--amber)", margin: "10px 0", fontWeight: "800" }}>
-                  {activeWord.word}
-                </h2>
-                <p style={{ color: "var(--text-3)", fontSize: "14px", fontStyle: "italic", marginBottom: "24px" }}>
-                  Phonetic: {activeWord.pronunciation}
-                </p>
+              <span className="learn-progress-indicator">
+                Question 4 of 4
+              </span>
+            </header>
 
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
-                  {isListening ? (
-                    <button 
-                      onClick={stopListening} 
-                      className="quiz-option-btn incorrect" 
-                      style={{ 
-                        width: "120px", 
-                        height: "120px", 
-                        borderRadius: "50%", 
-                        fontSize: "24px", 
-                        display: "flex", 
-                        flexDirection: "column",
-                        alignItems: "center", 
-                        justifyContent: "center",
-                        animation: "pulse 1.2s infinite",
-                        border: "none",
-                        color: "#fff",
-                        backgroundColor: "#ef4444"
-                      }}
-                    >
-                      <span>⏹️</span>
-                      <span style={{ fontSize: "11px", fontWeight: "600", marginTop: "4px" }}>Listening...</span>
+            <div className="learn-card-workspace">
+              <div className="quiz-card">
+                <div class="container">
+                  <div className="quiz-header">
+                    <span className="quiz-header-title">Pronunciation Check</span>
+                    <button className="quiz-cancel-btn" onClick={() => { setShowQuiz(false); stopListening(); }}>
+                      ✕ Exit Quiz
                     </button>
-                  ) : (
-                    <button 
-                      onClick={startListening} 
-                      className="quiz-option-btn" 
-                      style={{ 
-                        width: "120px", 
-                        height: "120px", 
-                        borderRadius: "50%", 
-                        fontSize: "24px", 
-                        display: "flex", 
-                        flexDirection: "column",
-                        alignItems: "center", 
-                        justifyContent: "center",
-                        border: "2px solid var(--amber)",
-                        backgroundColor: "rgba(245, 158, 11, 0.1)",
-                        color: "var(--amber)"
-                      }}
-                    >
-                      <span>🎙️</span>
-                      <span style={{ fontSize: "11px", fontWeight: "600", marginTop: "4px" }}>Tap to Speak</span>
-                    </button>
-                  )}
+                  </div>
 
-                  {speechTranscript && (
-                    <div style={{ marginTop: "12px", padding: "10px 20px", borderRadius: "8px", background: "var(--bg-3)", border: "1px solid var(--border-color)", width: "100%", maxWidth: "360px" }}>
-                      <span style={{ fontSize: "12px", color: "var(--text-3)", display: "block" }}>You said:</span>
-                      <strong style={{ fontSize: "16px", color: "var(--text-1)" }}>"{speechTranscript}"</strong>
-                    </div>
-                  )}
+                  <div className="quiz-question-container" style={{ textAlign: "center", padding: "20px" }}>
+                    <p className="quiz-question-text" style={{ fontSize: "18px", marginBottom: "8px" }}>
+                      Pronounce the word aloud:
+                    </p>
+                    <h2 style={{ fontSize: "36px", color: "var(--amber)", margin: "10px 0", fontWeight: "800" }}>
+                      {activeWord.word}
+                    </h2>
+                    <p style={{ color: "var(--text-3)", fontSize: "14px", fontStyle: "italic", marginBottom: "24px" }}>
+                      Phonetic: {activeWord.pronunciation}
+                    </p>
 
-                  {voiceFeedback && (
-                    <div style={{ 
-                      marginTop: "8px", 
-                      fontSize: "14px", 
-                      fontWeight: "600", 
-                      color: voiceFeedback.includes("Perfect") ? "var(--green)" : "var(--amber)"
-                    }}>
-                      {voiceFeedback}
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
+                      {isListening ? (
+                        <button
+                          onClick={stopListening}
+                          className="quiz-option-btn incorrect"
+                          style={{
+                            width: "120px",
+                            height: "120px",
+                            borderRadius: "50%",
+                            fontSize: "24px",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            animation: "pulse 1.2s infinite",
+                            border: "none",
+                            color: "#fff",
+                            backgroundColor: "#ef4444"
+                          }}
+                        >
+                          <span>⏹️</span>
+                          <span style={{ fontSize: "11px", fontWeight: "600", marginTop: "4px" }}>Listening...</span>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={startListening}
+                          className="quiz-option-btn"
+                          style={{
+                            width: "120px",
+                            height: "120px",
+                            borderRadius: "50%",
+                            fontSize: "24px",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            border: "2px solid var(--amber)",
+                            backgroundColor: "rgba(245, 158, 11, 0.1)",
+                            color: "var(--amber)"
+                          }}
+                        >
+                          <span>🎙️</span>
+                          <span style={{ fontSize: "11px", fontWeight: "600", marginTop: "4px" }}>Tap to Speak</span>
+                        </button>
+                      )}
+
+                      {speechTranscript && (
+                        <div style={{ marginTop: "12px", padding: "10px 20px", borderRadius: "8px", background: "var(--bg-3)", border: "1px solid var(--border-color)", width: "100%", maxWidth: "360px" }}>
+                          <span style={{ fontSize: "12px", color: "var(--text-3)", display: "block" }}>You said:</span>
+                          <strong style={{ fontSize: "16px", color: "var(--text-1)" }}>"{speechTranscript}"</strong>
+                        </div>
+                      )}
+
+                      {voiceFeedback && (
+                        <div style={{
+                          marginTop: "8px",
+                          fontSize: "14px",
+                          fontWeight: "600",
+                          color: voiceFeedback.includes("Perfect") ? "var(--green)" : "var(--amber)"
+                        }}>
+                          {voiceFeedback}
+                        </div>
+                      )}
                     </div>
-                  )}
+                    <div className="learn-controls-row" style={{ justifyContent: "center" }}>
+                      <button
+                        className="mark-learned-btn"
+                        onClick={handleNextQuestion}
+                        style={{ width: "320px", display: "block" }}
+                      >
+                        ✓ Finish & Mark as Learned
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className="learn-controls-row" style={{ justifyContent: "center" }}>
-            <button 
-              className="mark-learned-btn" 
-              onClick={handleNextQuestion}
-              style={{ width: "320px", display: "block" }}
-            >
-              ✓ Finish & Mark as Learned
-            </button>
           </div>
         </div>
       );
@@ -467,10 +470,10 @@ export default function LearnPage({ wordsPool = [], onMarkLearned, onWordSelect 
                 ✕ Exit Quiz
               </button>
             </div>
-            
+
             <div className="quiz-question-container">
               <p className="quiz-question-text">{currentQuestion.questionText}</p>
-              
+
               <div className="quiz-options-list">
                 {currentQuestion.options.map((option, idx) => {
                   let btnClass = "quiz-option-btn";
@@ -481,7 +484,7 @@ export default function LearnPage({ wordsPool = [], onMarkLearned, onWordSelect 
                       btnClass += " incorrect";
                     }
                   }
-                  
+
                   return (
                     <button
                       key={idx}
@@ -511,16 +514,16 @@ export default function LearnPage({ wordsPool = [], onMarkLearned, onWordSelect 
         <div className="learn-controls-row" style={{ justifyContent: "center" }}>
           {isAnswered && (
             isCorrect ? (
-              <button 
-                className="mark-learned-btn" 
+              <button
+                className="mark-learned-btn"
                 onClick={handleNextQuestion}
                 style={{ width: "320px", display: "block" }}
               >
                 Next Question ➔
               </button>
             ) : (
-              <button 
-                className="details-view-btn" 
+              <button
+                className="details-view-btn"
                 onClick={handleRetryQuestion}
                 style={{ width: "320px", borderColor: "var(--red)", color: "var(--red)" }}
               >
@@ -553,7 +556,7 @@ export default function LearnPage({ wordsPool = [], onMarkLearned, onWordSelect 
         >
           <div className="study-card-inner">
             {/* Front of Card */}
-            <div 
+            <div
               className="study-face front"
               style={getUniqueCardStyle(activeWord)}
             >
@@ -587,8 +590,8 @@ export default function LearnPage({ wordsPool = [], onMarkLearned, onWordSelect 
                         activeWord.mastery >= 75
                           ? "var(--green)"
                           : activeWord.mastery >= 45
-                          ? "var(--amber)"
-                          : "var(--red)",
+                            ? "var(--amber)"
+                            : "var(--red)",
                     }}
                   />
                 </div>
@@ -596,8 +599,8 @@ export default function LearnPage({ wordsPool = [], onMarkLearned, onWordSelect 
             </div>
 
             {/* Back of Card */}
-            <div 
-              className="study-face back" 
+            <div
+              className="study-face back"
               style={{ ...getUniqueCardStyle(activeWord), transform: "rotateY(180deg)" }}
             >
               <div className="study-card-top">

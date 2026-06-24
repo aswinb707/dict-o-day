@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Test.css";
+import { API_BASE_URL } from "./config";
 
 const COMMON_DISTRACTORS = [
   "Ephemeral", "Laconic", "Sanguine", "Mellifluous", "Luminous", 
@@ -100,7 +101,7 @@ export default function Test({ learnedWords = [], onTestCompleted }) {
     if (!token) return;
 
     // Start the test on the backend
-    fetch("http://localhost:8000/api/tests/start", {
+    fetch(`${API_BASE_URL}/api/tests/start`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -120,7 +121,7 @@ export default function Test({ learnedWords = [], onTestCompleted }) {
       // Submit each answer
       const answerPromises = questions.map((q, idx) => {
         const uAns = (userAnswers[idx] || "").trim();
-        return fetch(`http://localhost:8000/api/tests/${testId}/answer`, {
+        return fetch(`${API_BASE_URL}/api/tests/${testId}/answer`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -136,7 +137,7 @@ export default function Test({ learnedWords = [], onTestCompleted }) {
 
       return Promise.all(answerPromises).then(() => {
         // Finalize the test
-        return fetch(`http://localhost:8000/api/tests/${testId}/submit`, {
+        return fetch(`${API_BASE_URL}/api/tests/${testId}/submit`, {
           method: "POST",
           headers: { "Authorization": `Bearer ${token}` }
         });

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Login from "./Login";
 import Dashboard from "./Dashboard";
+import { API_BASE_URL } from "./config";
 
 const mapUserToProfile = (user) => {
   if (!user) return null;
@@ -27,7 +28,7 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (token) {
-      fetch("http://localhost:8000/api/users/me", {
+      fetch(`${API_BASE_URL}/api/users/me`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }

@@ -53,4 +53,14 @@ public class AiController {
         String evaluation = aiService.evaluateSpeakingAnswer(question, answer);
         return ResponseEntity.ok(Map.of("success", true, "evaluation", evaluation));
     }
+
+    @PostMapping("/ielts-next-question")
+    public ResponseEntity<Map<String, Object>> getNextQuestion(
+            @RequestBody Map<String, Object> request) {
+        List<Map<String, String>> history = (List<Map<String, String>>) request.get("history");
+        int questionNumber = ((Number) request.get("questionNumber")).intValue();
+        int totalQuestions = ((Number) request.get("totalQuestions")).intValue();
+        String nextQuestion = aiService.generateNextIeltsQuestion(history, questionNumber, totalQuestions);
+        return ResponseEntity.ok(Map.of("success", true, "nextQuestion", nextQuestion));
+    }
 }

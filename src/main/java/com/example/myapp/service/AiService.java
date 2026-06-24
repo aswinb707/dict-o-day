@@ -123,14 +123,42 @@ public class AiService {
             Map.of("role", "system", "content", 
                 "You are an expert IELTS speaking evaluator. Analyze the user's spoken answer to the question.\n" +
                 "Provide a JSON response with the following keys:\n" +
-                "1. \"feedback\": Concise, helpful, constructive feedback (max 2-3 sentences). Highlight how their answer is.\n" +
-                "2. \"professionalWords\": A JSON array of exactly 2 to 3 advanced/professional vocabulary alternatives that fit well in this context to replace simpler words.\n" +
+                "1. \"feedback\": Concise, helpful, constructive feedback focusing solely on their response and what they can improve (max 2-3 sentences).\n" +
+                "2. \"professionalWords\": A JSON array of exactly 2 to 3 advanced/professional vocabulary alternatives that fit well in this context that they could have used instead of simpler words in their response.\n" +
                 "3. \"bandScore\": An estimated IELTS band score for this answer (decimal between 1.0 and 9.0).\n\n" +
                 "Ensure the output is valid JSON and nothing else. No markdown formatting outside of JSON."),
             Map.of("role", "user", "content", 
                 "Question: " + question + "\nAnswer: " + answer)
         );
         return callGroqApi(messages);
+    }
+
+    public String generateNextIeltsQuestion(List<Map<String, String>> history, int questionNumber, int totalQuestions) {
+        StringBuilder systemPrompt = new StringBuilder();
+        systemPrompt.append("You are an expert IELTS speaking examiner conducting a face-to-face speaking test.\n");
+        systemPrompt.append("Your job is to generate the next question (Question ").append(questionNumber).append(" out of ").append(totalQuestions).append(").\n\n");
+        systemPrompt.append("CRITICAL INSTRUCTIONS:\n");
+        systemPrompt.append("1. ADAPTIVITY: Analyze the user's previous responses in the conversation. Build upon topics they brought up. For example, if they mentioned studying engineering, ask a follow-up about engineering or related career goals.\n");
+        systemPrompt.append("2. DIFFICULTY SCALING: If the user's previous responses are articulate and advanced, increase the complexity of the next question (ask about abstract concepts, future implications, or societal impacts). If they struggled or gave very brief answers, keep the question simpler and more concrete.\n");
+        systemPrompt.append("3. RESPONSE FORMAT: Output ONLY the raw question text. Do not write any greetings, introductions, explanations, or quotes. Do not wrap in JSON or markdown. Just the question text.\n");
+        systemPrompt.append("Example output: What are some of the challenges of studying a complex field like software engineering?");
+
+        List<Map<String, String>> messages = new ArrayList<>();
+        messages.add(Map.of("role", "system", "content", systemPrompt.toString()));
+
+        for (Map<String, String> turn : history) {
+            String q = turn.get("question");
+            String a = turn.get("answer");
+            if (q != null) {
+                messages.add(Map.of("role", "assistant", "content", q));
+            }
+            if (a != null) {
+                messages.add(Map.of("role", "user", "content", a));
+            }
+        }
+
+        String nextQuestion = callGroqApi(messages);
+        return nextQuestion.trim();
     }
 
     public String generateWordDetailsWithAi(String wordName) {

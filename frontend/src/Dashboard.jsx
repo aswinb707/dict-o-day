@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Dashboard.css";
 import logo from "./assets/dict-o-day.png";
+import { API_BASE_URL } from "./config";
 
 // Import new sub-pages
 import LearnPage from "./components/LearnPage";
@@ -71,10 +72,10 @@ function getUniqueCardStyle(wordData) {
   for (let i = 0; i < wordStr.length; i++) {
     hash = wordStr.charCodeAt(i) + ((hash << 5) - hash);
   }
-  
+
   const hue1 = Math.abs(hash) % 360;
   const hue2 = (hue1 + 40) % 360;
-  
+
   return {
     background: `linear-gradient(135deg, hsl(${hue1}, 75%, 20%) 0%, hsl(${hue2}, 70%, 15%) 100%)`,
     border: "1px solid rgba(255, 255, 255, 0.15)",
@@ -147,115 +148,115 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
     const token = localStorage.getItem("accessToken");
     if (!token) return;
 
-    fetch("http://localhost:8000/api/sessions/start", {
+    fetch(`${API_BASE_URL}/api/sessions/start`, {
       method: "POST",
       headers: { "Authorization": `Bearer ${token}` }
     })
-    .then(res => res.json())
-    .then(sessionRes => {
-      if (sessionRes.data) {
-        setSessionId(sessionRes.data.id);
-      }
-      return fetch("http://localhost:8000/api/words/today", {
-        headers: { "Authorization": `Bearer ${token}` }
-      });
-    })
-    .then(res => res.json())
-    .then(wordsRes => {
-      if (wordsRes.data) {
-        const mappedToday = wordsRes.data.map(w => ({
-          id: w.id,
-          word: w.word,
-          pos: w.partOfSpeech.charAt(0).toUpperCase() + w.partOfSpeech.slice(1),
-          definition: w.definition,
-          pronunciation: w.pronunciation,
-          sentences: [w.inASentence, ...(w.examples || [])],
-          synonyms: w.synonyms || "N/A",
-          antonyms: w.antonyms || "N/A",
-          mastery: 0,
-          fusedWord: w.fusedWord,
-          fusedDefinition: w.fusedDefinition,
-          fusedPronunciation: w.fusedPronunciation,
-          fusedSentence: w.fusedSentence
-        }));
-        setTodayWords(mappedToday);
-      }
-      return fetch("http://localhost:8000/api/words/learned", {
-        headers: { "Authorization": `Bearer ${token}` }
-      });
-    })
-    .then(res => res.json())
-    .then(learnedRes => {
-      let mappedLearned = [];
-      if (learnedRes.data) {
-        mappedLearned = learnedRes.data.map(p => ({
-          id: p.word.id,
-          word: p.word.word,
-          pos: p.word.partOfSpeech.charAt(0).toUpperCase() + p.word.partOfSpeech.slice(1),
-          definition: p.word.definition,
-          pronunciation: p.word.pronunciation,
-          sentences: [p.word.inASentence, ...(p.word.examples || [])],
-          synonyms: p.word.synonyms || "N/A",
-          antonyms: p.word.antonyms || "N/A",
-          mastery: Math.round(p.masteryScore * 100),
-          status: p.status,
-          dateLearned: p.lastReviewed ? p.lastReviewed.split("T")[0] : new Date().toISOString().split("T")[0],
-          fusedWord: p.word.fusedWord,
-          fusedDefinition: p.word.fusedDefinition,
-          fusedPronunciation: p.word.fusedPronunciation,
-          fusedSentence: p.word.fusedSentence
-        }));
-        setLearnedWords(mappedLearned);
-      }
-      return fetch("http://localhost:8000/api/users/me/analytics", {
-        headers: { "Authorization": `Bearer ${token}` }
+      .then(res => res.json())
+      .then(sessionRes => {
+        if (sessionRes.data) {
+          setSessionId(sessionRes.data.id);
+        }
+        return fetch(`${API_BASE_URL}/api/words/today`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
       })
       .then(res => res.json())
-      .then(analyticsRes => {
-        if (analyticsRes.data) {
-          const calendar = analyticsRes.data.calendarHistory || [];
-          const weekDates = getWeekDates();
-          
-          const newStreakDays = weekDates.map(wd => {
-            const entry = calendar.find(c => c.entryDate === wd.dateStr);
-            return {
-              day: wd.label,
-              done: entry ? entry.streakMaintained : false,
-              today: wd.isToday
-            };
-          });
-          setStreakDays(newStreakDays);
-
-          const newChartData = weekDates.map(wd => {
-            const entry = calendar.find(c => c.entryDate === wd.dateStr);
-            return {
-              label: wd.label,
-              words: entry ? entry.wordsCount : 0
-            };
-          });
-          setChartData(newChartData);
-
-          fetch("http://localhost:8000/api/users/me/streak", {
-            headers: { "Authorization": `Bearer ${token}` }
-          })
-          .then(res => res.json())
-          .then(streakRes => {
-            const activeStreak = streakRes.streakCount || 0;
-            setStreakCount(activeStreak);
-            const thisWeekTotal = newChartData.reduce((sum, item) => sum + item.words, 0);
-            const avgAccuracy = analyticsRes.data.averageTestAccuracy != null ? Math.round(analyticsRes.data.averageTestAccuracy) : 0;
-            setStats([
-              { label: "Day streak", value: String(activeStreak), icon: "🔥" },
-              { label: "Words learned", value: String(analyticsRes.data.totalWordsStudied || 0), icon: "📚" },
-              { label: "Test accuracy", value: `${avgAccuracy}%`, icon: "🎯" },
-              { label: "This week", value: String(thisWeekTotal), icon: "📅" },
-            ]);
-          });
+      .then(wordsRes => {
+        if (wordsRes.data) {
+          const mappedToday = wordsRes.data.map(w => ({
+            id: w.id,
+            word: w.word,
+            pos: w.partOfSpeech.charAt(0).toUpperCase() + w.partOfSpeech.slice(1),
+            definition: w.definition,
+            pronunciation: w.pronunciation,
+            sentences: [w.inASentence, ...(w.examples || [])],
+            synonyms: w.synonyms || "N/A",
+            antonyms: w.antonyms || "N/A",
+            mastery: 0,
+            fusedWord: w.fusedWord,
+            fusedDefinition: w.fusedDefinition,
+            fusedPronunciation: w.fusedPronunciation,
+            fusedSentence: w.fusedSentence
+          }));
+          setTodayWords(mappedToday);
         }
-      });
-    })
-    .catch(err => console.error("Error loading dashboard data", err))
-    .finally(() => setLoading(false));
+        return fetch(`${API_BASE_URL}/api/words/learned`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+      })
+      .then(res => res.json())
+      .then(learnedRes => {
+        let mappedLearned = [];
+        if (learnedRes.data) {
+          mappedLearned = learnedRes.data.map(p => ({
+            id: p.word.id,
+            word: p.word.word,
+            pos: p.word.partOfSpeech.charAt(0).toUpperCase() + p.word.partOfSpeech.slice(1),
+            definition: p.word.definition,
+            pronunciation: p.word.pronunciation,
+            sentences: [p.word.inASentence, ...(p.word.examples || [])],
+            synonyms: p.word.synonyms || "N/A",
+            antonyms: p.word.antonyms || "N/A",
+            mastery: Math.round(p.masteryScore * 100),
+            status: p.status,
+            dateLearned: p.lastReviewed ? p.lastReviewed.split("T")[0] : new Date().toISOString().split("T")[0],
+            fusedWord: p.word.fusedWord,
+            fusedDefinition: p.word.fusedDefinition,
+            fusedPronunciation: p.word.fusedPronunciation,
+            fusedSentence: p.word.fusedSentence
+          }));
+          setLearnedWords(mappedLearned);
+        }
+        return fetch(`${API_BASE_URL}/api/users/me/analytics`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        })
+          .then(res => res.json())
+          .then(analyticsRes => {
+            if (analyticsRes.data) {
+              const calendar = analyticsRes.data.calendarHistory || [];
+              const weekDates = getWeekDates();
+
+              const newStreakDays = weekDates.map(wd => {
+                const entry = calendar.find(c => c.entryDate === wd.dateStr);
+                return {
+                  day: wd.label,
+                  done: entry ? entry.streakMaintained : false,
+                  today: wd.isToday
+                };
+              });
+              setStreakDays(newStreakDays);
+
+              const newChartData = weekDates.map(wd => {
+                const entry = calendar.find(c => c.entryDate === wd.dateStr);
+                return {
+                  label: wd.label,
+                  words: entry ? entry.wordsCount : 0
+                };
+              });
+              setChartData(newChartData);
+
+              fetch(`${API_BASE_URL}/api/users/me/streak`, {
+                headers: { "Authorization": `Bearer ${token}` }
+              })
+                .then(res => res.json())
+                .then(streakRes => {
+                  const activeStreak = streakRes.streakCount || 0;
+                  setStreakCount(activeStreak);
+                  const thisWeekTotal = newChartData.reduce((sum, item) => sum + item.words, 0);
+                  const avgAccuracy = analyticsRes.data.averageTestAccuracy != null ? Math.round(analyticsRes.data.averageTestAccuracy) : 0;
+                  setStats([
+                    { label: "Day streak", value: String(activeStreak), icon: "🔥" },
+                    { label: "Words learned", value: String(analyticsRes.data.totalWordsStudied || 0), icon: "📚" },
+                    { label: "Test accuracy", value: `${avgAccuracy}%`, icon: "🎯" },
+                    { label: "This week", value: String(thisWeekTotal), icon: "📅" },
+                  ]);
+                });
+            }
+          });
+      })
+      .catch(err => console.error("Error loading dashboard data", err))
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -267,37 +268,37 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
     const token = localStorage.getItem("accessToken");
     if (!token || !sessionId) return;
 
-    fetch(`http://localhost:8000/api/sessions/${sessionId}/word-seen`, {
+    fetch(`${API_BASE_URL}/api/sessions/${sessionId}/word-seen`, {
       method: "POST",
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify({ wordId })
     })
-    .then(res => res.json())
-    .then(() => {
-      const remaining = todayWords.filter(w => w.id !== wordId && !learnedWords.some(lw => lw.id === w.id));
-      if (remaining.length === 0) {
-        fetch(`http://localhost:8000/api/sessions/${sessionId}/complete`, {
-          method: "POST",
-          headers: { "Authorization": `Bearer ${token}` }
-        })
-        .then(() => {
+      .then(res => res.json())
+      .then(() => {
+        const remaining = todayWords.filter(w => w.id !== wordId && !learnedWords.some(lw => lw.id === w.id));
+        if (remaining.length === 0) {
+          fetch(`${API_BASE_URL}/api/sessions/${sessionId}/complete`, {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${token}` }
+          })
+            .then(() => {
+              loadDashboardData();
+            });
+        } else {
           loadDashboardData();
-        });
-      } else {
-        loadDashboardData();
-      }
-    })
-    .catch(err => console.error("Error marking word seen", err));
+        }
+      })
+      .catch(err => console.error("Error marking word seen", err));
   };
 
   const handleAddCustomWord = (newWord) => {
     const token = localStorage.getItem("accessToken");
     if (!token) return;
 
-    fetch("http://localhost:8000/api/words/custom", {
+    fetch(`${API_BASE_URL}/api/words/custom`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -312,36 +313,36 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
         examples: newWord.sentences.slice(1)
       })
     })
-    .then(res => res.json())
-    .then(() => {
-      loadDashboardData();
-    })
-    .catch(err => console.error("Error saving custom word", err));
+      .then(res => res.json())
+      .then(() => {
+        loadDashboardData();
+      })
+      .catch(err => console.error("Error saving custom word", err));
   };
 
   const handlePostponeWord = (wordId) => {
     const token = localStorage.getItem("accessToken");
     if (!token) return;
 
-    fetch(`http://localhost:8000/api/words/${wordId}/postpone`, {
+    fetch(`${API_BASE_URL}/api/words/${wordId}/postpone`, {
       method: "POST",
       headers: { "Authorization": `Bearer ${token}` }
     })
-    .then(res => res.json())
-    .then(() => {
-      loadDashboardData();
-    })
-    .catch(err => console.error("Error postponing word:", err));
+      .then(res => res.json())
+      .then(() => {
+        loadDashboardData();
+      })
+      .catch(err => console.error("Error postponing word:", err));
   };
 
   const handleSaveProfile = (formData) => {
     const token = localStorage.getItem("accessToken");
     if (!token) return;
 
-    const diffMapped = formData.difficulty === "Easy" ? "beginner" : 
-                       formData.difficulty === "Medium" ? "intermediate" : "advanced";
+    const diffMapped = formData.difficulty === "Easy" ? "beginner" :
+      formData.difficulty === "Medium" ? "intermediate" : "advanced";
 
-    fetch("http://localhost:8000/api/users/me", {
+    fetch(`${API_BASE_URL}/api/users/me`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -352,22 +353,22 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
         wordCount: Number(formData.wordCount)
       })
     })
-    .then(res => res.json())
-    .then(resData => {
-      if (resData.data) {
-        let diff = "Medium";
-        if (resData.data.difficulty === "beginner") diff = "Easy";
-        else if (resData.data.difficulty === "intermediate") diff = "Medium";
-        else if (resData.data.difficulty === "advanced") diff = "Hard";
+      .then(res => res.json())
+      .then(resData => {
+        if (resData.data) {
+          let diff = "Medium";
+          if (resData.data.difficulty === "beginner") diff = "Easy";
+          else if (resData.data.difficulty === "intermediate") diff = "Medium";
+          else if (resData.data.difficulty === "advanced") diff = "Hard";
 
-        setUserProfile({
-          ...userProfile,
-          difficulty: diff,
-          wordCount: resData.data.wordCountPerDay
-        });
-      }
-    })
-    .catch(err => console.error("Error updating profile", err));
+          setUserProfile({
+            ...userProfile,
+            difficulty: diff,
+            wordCount: resData.data.wordCountPerDay
+          });
+        }
+      })
+      .catch(err => console.error("Error updating profile", err));
   };
 
   const handleNavigateToAI = (wordName) => {
@@ -377,8 +378,8 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
 
   const handleWordCardSelect = (wordObj) => {
     const fullData =
-      todayWords.find((v) => v.word.toLowerCase() === wordObj.word.toLowerCase()) || 
-      learnedWords.find((v) => v.word.toLowerCase() === wordObj.word.toLowerCase()) || 
+      todayWords.find((v) => v.word.toLowerCase() === wordObj.word.toLowerCase()) ||
+      learnedWords.find((v) => v.word.toLowerCase() === wordObj.word.toLowerCase()) ||
       wordObj;
     setSelectedWord(fullData);
     setActiveNav("word-detail");
@@ -406,7 +407,7 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
         <nav className="sidebar-nav">
           {[
             { id: "home", icon: "⊞", label: "Dashboard" },
-            { id: "explore", icon: "🔍", label: "Explore" },
+            { id: "explore", icon: <span style={{ fontSize: "24px" }}>⌕</span>, label: "Explore" },
             { id: "learn", icon: "✦", label: "Learn" },
             { id: "test", icon: "◎", label: "Test" },
             { id: "journal", icon: "◈", label: "Journal" },
@@ -521,7 +522,7 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
 
             {/* Limit Warning Banner */}
             {todayWords.length > userProfile.wordCount && (
-              <div 
+              <div
                 className="limit-warning-banner animate-fade-in"
                 style={{
                   background: "linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%)",
@@ -549,8 +550,8 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
 
             {/* Action buttons */}
             <section className="action-row">
-              <button 
-                className="action-btn primary" 
+              <button
+                className="action-btn primary"
                 onClick={() => setActiveNav("learn")}
                 disabled={todayWords.length > userProfile.wordCount}
                 style={todayWords.length > userProfile.wordCount ? { opacity: 0.5, cursor: "not-allowed" } : {}}
@@ -585,8 +586,8 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
                     >
                       <div className="word-card-inner">
                         {/* Front */}
-                        <div 
-                          className="word-face front" 
+                        <div
+                          className="word-face front"
                           style={getUniqueCardStyle(w)}
                         >
                           <div className="word-top">
@@ -606,7 +607,7 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
                           <MasteryBar pct={mastery} />
                         </div>
                         {/* Back */}
-                        <div 
+                        <div
                           className="word-face back"
                           style={{ ...getUniqueCardStyle(w), transform: "rotateY(180deg)" }}
                         >

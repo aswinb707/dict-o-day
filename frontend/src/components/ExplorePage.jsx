@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./ExplorePage.css";
+import { API_BASE_URL } from "../config";
 
 export default function ExplorePage({ onAddWordSuccess, onBack }) {
   const [query, setQuery] = useState("");
@@ -19,7 +20,7 @@ export default function ExplorePage({ onAddWordSuccess, onBack }) {
     setAdded(false);
 
     const token = localStorage.getItem("accessToken");
-    fetch(`http://localhost:8000/api/words/preview?word=${encodeURIComponent(wordToSearch.trim())}`, {
+    fetch(`${API_BASE_URL}/api/words/preview?word=${encodeURIComponent(wordToSearch.trim())}`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -52,7 +53,7 @@ export default function ExplorePage({ onAddWordSuccess, onBack }) {
     setLoadingSuggestions(true);
     setError(null);
     const token = localStorage.getItem("accessToken");
-    fetch("http://localhost:8000/api/ai/suggest-words", {
+    fetch(`${API_BASE_URL}/api/ai/suggest-words`, {
       method: "POST",
       headers: { "Authorization": `Bearer ${token}` }
     })
@@ -76,7 +77,7 @@ export default function ExplorePage({ onAddWordSuccess, onBack }) {
     if (!wordData) return;
     const token = localStorage.getItem("accessToken");
     
-    fetch("http://localhost:8000/api/words/recommend", {
+    fetch(`${API_BASE_URL}/api/words/recommend`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

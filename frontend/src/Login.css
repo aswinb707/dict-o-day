@@ -245,6 +245,10 @@ body {
   transition: color 0.15s, background 0.15s;
 }
 
+.container {
+  background: rgb(247, 139, 139);
+}
+
 .tab-btn:hover {
   color: var(--text-1);
   background: var(--surface-2);

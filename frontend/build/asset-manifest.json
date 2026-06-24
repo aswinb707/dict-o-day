@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/static/css/main.3691203c.css",
-    "main.js": "/static/js/main.ad92a85d.js",
+    "main.css": "/static/css/main.a47d0db3.css",
+    "main.js": "/static/js/main.254fc707.js",
     "static/js/990.5d5b300d.chunk.js": "/static/js/990.5d5b300d.chunk.js",
     "static/media/dict-o-day.png": "/static/media/dict-o-day.d2d63cf0ef65575aa074.png",
     "index.html": "/index.html",
-    "main.3691203c.css.map": "/static/css/main.3691203c.css.map",
-    "main.ad92a85d.js.map": "/static/js/main.ad92a85d.js.map",
+    "main.a47d0db3.css.map": "/static/css/main.a47d0db3.css.map",
+    "main.254fc707.js.map": "/static/js/main.254fc707.js.map",
     "990.5d5b300d.chunk.js.map": "/static/js/990.5d5b300d.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.3691203c.css",
-    "static/js/main.ad92a85d.js"
+    "static/css/main.a47d0db3.css",
+    "static/js/main.254fc707.js"
   ]
 }

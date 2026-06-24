@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import logo from "./assets/dict-o-day.png";
 import "./Login.css";
 import Field from "./components/Field";
+import { API_BASE_URL } from "./config";
 
 const EyeBtn = ({ showPass, setShowPass }) => (
   <button
@@ -90,7 +91,7 @@ export default function Login({ onLogin, onRegister }) {
     if (Object.keys(e2).length) return;
     setLoading(true);
 
-    fetch("http://localhost:8000/api/auth/login", {
+    fetch(`${API_BASE_URL}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -135,7 +136,7 @@ export default function Login({ onLogin, onRegister }) {
     const diffMapped = registerForm.difficulty === "Easy" ? "beginner" : 
                        registerForm.difficulty === "Medium" ? "intermediate" : "advanced";
 
-    fetch("http://localhost:8000/api/auth/register", {
+    fetch(`${API_BASE_URL}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
