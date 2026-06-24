@@ -47,6 +47,9 @@ public class DatabaseConfig {
             // Build the JDBC URL, explicitly requiring SSL for production/Render connections
             String host = dbUri.getHost();
             int port = dbUri.getPort();
+            if (port == -1) {
+                port = 5432;
+            }
             String path = dbUri.getPath();
             
             String dbUrl = String.format("jdbc:postgresql://%s:%d%s?sslmode=require", host, port, path);
