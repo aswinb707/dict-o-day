@@ -28,7 +28,7 @@ services:
       - key: DB_NAME
         fromDatabase:
           name: dict-o-day-db
-          property: databaseName
+          property: database
       - key: SPRING_DATASOURCE_USERNAME
         fromDatabase:
           name: dict-o-day-db
