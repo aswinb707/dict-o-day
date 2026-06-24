@@ -141,6 +141,8 @@ async def proxy_to_spring_boot(request: Request, path: str):
 
     headers = dict(request.headers)
     headers.pop("host", None)
+    headers.pop("accept-encoding", None)
+    headers.pop("content-length", None)
 
     body = await request.body()
     params = dict(request.query_params)
