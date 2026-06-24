@@ -17,26 +17,10 @@ services:
     envVars:
       - key: PORT
         value: 8080
-      - key: DB_HOST
+      - key: DATABASE_URL
         fromDatabase:
           name: dict-o-day-db
-          property: host
-      - key: DB_PORT
-        fromDatabase:
-          name: dict-o-day-db
-          property: port
-      - key: DB_NAME
-        fromDatabase:
-          name: dict-o-day-db
-          property: database
-      - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
-          name: dict-o-day-db
-          property: user
-      - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
-          name: dict-o-day-db
-          property: password
+          property: connectionString
       - key: REDIS_URL
         fromService:
           type: redis
