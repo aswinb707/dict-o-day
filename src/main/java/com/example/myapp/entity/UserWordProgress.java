@@ -47,4 +47,10 @@ public class UserWordProgress {
 
     @Column(name = "last_reviewed_at")
     private LocalDateTime lastReviewedAt;
+
+    @Column(name = "postponed_until")
+    private java.time.LocalDate postponedUntil;
+
+    @Transient
+    private Word word;
 }

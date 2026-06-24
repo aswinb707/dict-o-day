@@ -37,8 +37,11 @@ public class RedisService {
     // ── Daily Word Queue ──
 
     public void cacheDailyWords(UUID userId, String wordsJson) {
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        java.time.LocalDateTime midnight = now.toLocalDate().plusDays(1).atStartOfDay();
+        java.time.Duration durationToMidnight = java.time.Duration.between(now, midnight);
         redisTemplate.opsForValue().set(
-                DAILY_WORDS_KEY + userId, wordsJson, Duration.ofHours(24));
+                DAILY_WORDS_KEY + userId, wordsJson, durationToMidnight);
     }
 
     public String getCachedDailyWords(UUID userId) {

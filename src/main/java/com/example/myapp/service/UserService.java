@@ -27,7 +27,7 @@ public class UserService {
             user.setDifficulty(request.getDifficulty());
         }
         if (request.getWordCount() != null) {
-            user.setWordCountPerDay(Math.min(request.getWordCount(), 15));
+            user.setWordCountPerDay(Math.max(1, Math.min(request.getWordCount(), 10)));
         }
 
         return userRepository.save(user);

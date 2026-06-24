@@ -29,10 +29,9 @@ public class TestService {
         LocalDate today = LocalDate.now();
         DailySession session = sessionRepository.findByUserIdAndSessionDate(userId, today)
                 .orElseThrow(() -> new IllegalArgumentException("Start a session first."));
-        long learnedCount = sessionWordRepository.countBySessionIdAndMode(session.getId(), "learn");
         Test test = Test.builder()
                 .sessionId(session.getId()).userId(userId).type(type)
-                .totalQuestions((int) learnedCount).correctAnswers(0).scorePct(0.0).build();
+                .totalQuestions(0).correctAnswers(0).scorePct(0.0).build();
         return testRepository.save(test);
     }
 
@@ -48,7 +47,10 @@ public class TestService {
         sessionWordRepository.save(sw);
         if (correct) {
             test.setCorrectAnswers(test.getCorrectAnswers() + 1);
-            testRepository.save(test);
+        }
+        test.setTotalQuestions(test.getTotalQuestions() + 1);
+        testRepository.save(test);
+        if (correct) {
             wordService.recordCorrectAnswer(userId, wordId);
         }
         return correct;

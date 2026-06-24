@@ -41,10 +41,16 @@ public class AiController {
     @PostMapping("/suggest-words")
     public ResponseEntity<Map<String, Object>> suggestWords(Authentication auth) {
         JwtUserDetails d = (JwtUserDetails) auth.getDetails();
-        String suggestions = aiService.chat(d.getUserId(),
-                "Based on my vocabulary level, suggest 5 new English words I should learn. " +
-                "For each word give: the word, part of speech, definition, and an example sentence. " +
-                "Format as a numbered list.", null);
-        return ResponseEntity.ok(Map.of("success", true, "suggestions", suggestions));
+        List<String> words = aiService.suggestWordsJson(d.getUserId());
+        return ResponseEntity.ok(Map.of("success", true, "words", words));
+    }
+
+    @PostMapping("/ielts-evaluate")
+    public ResponseEntity<Map<String, Object>> evaluateSpeaking(
+            @RequestBody Map<String, String> request) {
+        String question = request.get("question");
+        String answer = request.get("answer");
+        String evaluation = aiService.evaluateSpeakingAnswer(question, answer);
+        return ResponseEntity.ok(Map.of("success", true, "evaluation", evaluation));
     }
 }

@@ -41,4 +41,29 @@ public class WordController {
     public ResponseEntity<ApiResponse<List<Word>>> searchWords(@RequestParam String q) {
         return ResponseEntity.ok(ApiResponse.ok(wordService.searchWords(q)));
     }
+
+    @GetMapping("/preview")
+    public ResponseEntity<ApiResponse<Word>> previewWord(@RequestParam String word) {
+        return ResponseEntity.ok(ApiResponse.ok(wordService.previewWord(word)));
+    }
+
+    @PostMapping("/custom")
+    public ResponseEntity<ApiResponse<Word>> createCustomWord(@RequestBody Word customWord, Authentication auth) {
+        JwtUserDetails d = (JwtUserDetails) auth.getDetails();
+        return ResponseEntity.ok(ApiResponse.ok(wordService.createCustomWord(d.getUserId(), customWord)));
+    }
+
+    @PostMapping("/recommend")
+    public ResponseEntity<ApiResponse<Word>> addRecommendedWord(@RequestBody java.util.Map<String, String> request, Authentication auth) {
+        JwtUserDetails d = (JwtUserDetails) auth.getDetails();
+        String word = request.get("word");
+        return ResponseEntity.ok(ApiResponse.ok(wordService.addRecommendedWord(d.getUserId(), word)));
+    }
+
+    @PostMapping("/{id}/postpone")
+    public ResponseEntity<ApiResponse<Void>> postponeWord(@PathVariable UUID id, Authentication auth) {
+        JwtUserDetails d = (JwtUserDetails) auth.getDetails();
+        wordService.postponeWord(d.getUserId(), id);
+        return ResponseEntity.ok(ApiResponse.ok(null));
+    }
 }

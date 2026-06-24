@@ -47,6 +47,24 @@ public class Word {
     @Column(columnDefinition = "jsonb")
     private List<String> tags;
 
+    @Column(columnDefinition = "TEXT")
+    private String synonyms;
+
+    @Column(columnDefinition = "TEXT")
+    private String antonyms;
+
+    @Column(name = "fused_word", length = 100)
+    private String fusedWord;
+
+    @Column(name = "fused_definition", columnDefinition = "TEXT")
+    private String fusedDefinition;
+
+    @Column(name = "fused_pronunciation", length = 100)
+    private String fusedPronunciation;
+
+    @Column(name = "fused_sentence", columnDefinition = "TEXT")
+    private String fusedSentence;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

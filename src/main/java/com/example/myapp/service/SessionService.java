@@ -68,7 +68,10 @@ public class SessionService {
         sessionRepository.save(session);
 
         // Update word progress
-        wordService.markWordSeen(userId, wordId);
+        wordService.markWordLearnedAfterQuiz(userId, wordId);
+
+        // Update streak/calendar immediately for the learned word!
+        streakService.updateStreak(userId, 1);
 
         return sw;
     }
@@ -88,8 +91,8 @@ public class SessionService {
         session.setCompleted(true);
         sessionRepository.save(session);
 
-        // Update streak
-        streakService.updateStreak(userId, session.getWordsLearned());
+        // Update streak with 0 additional words (since we already counted them in markWordSeen)
+        streakService.updateStreak(userId, 0);
 
         // Clear daily word cache so next day gets fresh words
         redisService.clearDailyWords(userId);

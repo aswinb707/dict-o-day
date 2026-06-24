@@ -6,6 +6,7 @@ import com.example.myapp.entity.User;
 import com.example.myapp.security.JwtUserDetails;
 import com.example.myapp.service.AnalyticsService;
 import com.example.myapp.service.UserService;
+import com.example.myapp.service.WordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ public class UserController {
 
     private final UserService userService;
     private final AnalyticsService analyticsService;
+    private final WordService wordService;
 
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<User>> getProfile(Authentication auth) {
@@ -31,7 +33,11 @@ public class UserController {
     public ResponseEntity<ApiResponse<User>> updateProfile(
             @RequestBody UpdateProfileRequest request, Authentication auth) {
         JwtUserDetails d = (JwtUserDetails) auth.getDetails();
-        return ResponseEntity.ok(ApiResponse.ok(userService.updateProfile(d.getUserId(), request)));
+        User updated = userService.updateProfile(d.getUserId(), request);
+        if (request.getWordCount() != null) {
+            wordService.adjustTodayWordsToLimit(d.getUserId(), updated.getWordCountPerDay());
+        }
+        return ResponseEntity.ok(ApiResponse.ok(updated));
     }
 
     @GetMapping("/me/streak")
@@ -44,8 +50,8 @@ public class UserController {
     }
 
     @GetMapping("/me/analytics")
-    public ResponseEntity<Map<String, Object>> getAnalytics(Authentication auth) {
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getAnalytics(Authentication auth) {
         JwtUserDetails d = (JwtUserDetails) auth.getDetails();
-        return ResponseEntity.ok(analyticsService.getAnalytics(d.getUserId()));
+        return ResponseEntity.ok(ApiResponse.ok(analyticsService.getAnalytics(d.getUserId())));
     }
 }

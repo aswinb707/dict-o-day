@@ -18,4 +18,10 @@ public interface UserWordProgressRepository extends JpaRepository<UserWordProgre
     List<UserWordProgress> findByUserIdAndStatus(UUID userId, String status);
 
     long countByUserIdAndStatus(UUID userId, String status);
+
+    @org.springframework.data.jpa.repository.Query("SELECT p FROM UserWordProgress p WHERE p.userId = :userId AND p.postponedUntil IS NOT NULL AND p.postponedUntil <= :today")
+    List<UserWordProgress> findDuePostponed(@org.springframework.data.repository.query.Param("userId") UUID userId, @org.springframework.data.repository.query.Param("today") java.time.LocalDate today);
+
+    @org.springframework.data.jpa.repository.Query("SELECT p FROM UserWordProgress p WHERE p.userId = :userId AND p.postponedUntil IS NOT NULL ORDER BY p.postponedUntil ASC")
+    List<UserWordProgress> findPostponed(@org.springframework.data.repository.query.Param("userId") UUID userId);
 }
