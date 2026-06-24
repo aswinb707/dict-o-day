@@ -154,7 +154,20 @@ async def proxy_to_spring_boot(request: Request, path: str):
                 content=body,
                 params=params,
             )
-            return response.json()
+            
+            from fastapi.responses import Response
+            # Exclude headers that can conflict or should not be forwarded
+            exclude_headers = ["content-length", "content-encoding", "transfer-encoding", "connection"]
+            response_headers = {
+                k: v for k, v in response.headers.items()
+                if k.lower() not in exclude_headers
+            }
+            return Response(
+                content=response.content,
+                status_code=response.status_code,
+                headers=response_headers,
+                media_type=response.headers.get("content-type")
+            )
         except httpx.HTTPStatusError as e:
             raise HTTPException(status_code=e.response.status_code, detail=str(e))
         except Exception as e:

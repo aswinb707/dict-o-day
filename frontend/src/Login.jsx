@@ -101,7 +101,7 @@ export default function Login({ onLogin, onRegister }) {
     })
     .then(res => {
       if (!res.ok) {
-        return res.json().then(d => { throw new Error(d.message || "Invalid credentials"); });
+        return res.json().then(d => { throw new Error(d.error || d.message || "Invalid credentials"); });
       }
       return res.json();
     })
@@ -150,7 +150,7 @@ export default function Login({ onLogin, onRegister }) {
     })
     .then(res => {
       if (!res.ok) {
-        return res.json().then(d => { throw new Error(d.message || "Registration failed"); });
+        return res.json().then(d => { throw new Error(d.error || d.message || "Registration failed"); });
       }
       return res.json();
     })
