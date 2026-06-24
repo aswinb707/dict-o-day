@@ -17,10 +17,18 @@ services:
     envVars:
       - key: PORT
         value: 8080
-      - key: SPRING_DATASOURCE_URL
+      - key: DB_HOST
         fromDatabase:
           name: dict-o-day-db
-          property: connectionString
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: dict-o-day-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: dict-o-day-db
+          property: databaseName
       - key: SPRING_DATASOURCE_USERNAME
         fromDatabase:
           name: dict-o-day-db
