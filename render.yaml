@@ -34,8 +34,7 @@ services:
           type: redis
           name: dict-o-day-redis
           property: connectionString
-      - key: JWT_SECRET
-        generateValue: true
+      - fromGroup: dict-o-day-shared
       - key: GROQ_API_KEY
         sync: false
       - key: MIDDLEWARE_URL
@@ -57,18 +56,19 @@ services:
           type: redis
           name: dict-o-day-redis
           property: connectionString
-      - key: JWT_SECRET
-        fromService:
-          type: web
-          name: dict-o-day-backend
-          property: JWT_SECRET
+      - fromGroup: dict-o-day-shared
       - key: GROQ_API_KEY
         sync: false
 
 databases:
   - name: dict-o-day-db
     databaseName: dictoday
-    user: postgres
     plan: free
     region: oregon
+
+envVarGroups:
+  - name: dict-o-day-shared
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true
 
