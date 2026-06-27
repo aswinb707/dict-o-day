@@ -12,7 +12,14 @@ import ProfilePage from "./components/ProfilePage";
 import AITutorPage from "./components/AITutorPage";
 import WordDetailPage from "./components/WordDetailPage";
 import ExplorePage from "./components/ExplorePage";
-
+function getGreeting() {
+  const hour = new Date().getHours();
+  if (hour > 0 && hour < 4) return "Good new day🌆";
+  if (hour >= 4 && hour < 12) return "Good morning🌅";
+  if (hour >= 12 && hour < 17) return "Good afternoon☀️";
+  if (hour >= 17 && hour < 21) return "Good evening🌃";
+  return "Good evening🌙";
+}
 function MasteryBar({ pct }) {
   const color =
     pct >= 75 ? "#639922" : pct >= 45 ? "#EF9F27" : "#E24B4A";
@@ -451,7 +458,7 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
         {/* Top bar */}
         <header className="topbar">
           <div className="topbar-left">
-            <h1 className="page-title">Good morning, {userProfile.name} ☀️</h1>
+            <h1 className="page-title">{getGreeting()}, {userProfile.name} </h1>
             <p className="page-sub">You have {todayWords.length} new words waiting today</p>
           </div>
           <div className="topbar-right">

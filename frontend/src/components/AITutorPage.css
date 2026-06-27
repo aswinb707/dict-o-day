@@ -16,7 +16,7 @@
 .ai-tutor-title {
   font-size: 26px;
   font-weight: 700;
-  color: var(--text-1);
+  color: rgba(0, 0, 0, 0.958);
 }
 
 .tutor-mode-tabs {
@@ -125,8 +125,13 @@
   margin: 0 1px;
 }
 
-.typing-indicator span:nth-child(2) { animation-delay: .2s; }
-.typing-indicator span:nth-child(3) { animation-delay: .4s; }
+.typing-indicator span:nth-child(2) {
+  animation-delay: .2s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: .4s;
+}
 
 .suggestions-row {
   display: flex;
@@ -386,11 +391,30 @@
   animation: scaleUpDown 1.2s infinite ease-in-out;
 }
 
-.bar-1 { height: 30px; animation-delay: 0.1s; }
-.bar-2 { height: 60px; animation-delay: 0.2s; }
-.bar-3 { height: 80px; animation-delay: 0.3s; }
-.bar-4 { height: 50px; animation-delay: 0.4s; }
-.bar-5 { height: 25px; animation-delay: 0.5s; }
+.bar-1 {
+  height: 30px;
+  animation-delay: 0.1s;
+}
+
+.bar-2 {
+  height: 60px;
+  animation-delay: 0.2s;
+}
+
+.bar-3 {
+  height: 80px;
+  animation-delay: 0.3s;
+}
+
+.bar-4 {
+  height: 50px;
+  animation-delay: 0.4s;
+}
+
+.bar-5 {
+  height: 25px;
+  animation-delay: 0.5s;
+}
 
 .recorder-buttons {
   display: flex;
@@ -648,13 +672,27 @@
 }
 
 @keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
 }
 
 @keyframes scaleUpDown {
-  0%, 100% { transform: scaleY(1); }
-  50% { transform: scaleY(0.4); }
+
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(0.4);
+  }
 }
 
 @media (max-width: 768px) {
@@ -663,6 +701,7 @@
     justify-items: center;
     gap: 20px;
   }
+
   .sectional-scores-list {
     width: 100%;
   }
@@ -1027,6 +1066,11 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }

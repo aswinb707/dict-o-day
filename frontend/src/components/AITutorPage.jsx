@@ -37,7 +37,7 @@ function formatMessageText(text) {
 
 export default function AITutorPage({ initialWord, onClearInitialWord, learnedWords = [], todayWords = [] }) {
   const [activeMode, setActiveMode] = useState(initialWord ? "chat" : "ielts");
-  
+
   // Find word ID if initialWord context exists
   const allWords = [...(learnedWords || []), ...(todayWords || [])];
   const matchingWord = allWords.find(w => w.word.toLowerCase() === (typeof initialWord === "string" ? initialWord.toLowerCase() : ""));
@@ -142,20 +142,20 @@ export default function AITutorPage({ initialWord, onClearInitialWord, learnedWo
       },
       body: JSON.stringify({ message: userMsg, wordId: wordId })
     })
-    .then(res => res.json())
-    .then(data => {
-      setAiTyping(false);
-      if (data.response) {
-        setChatMessages((prev) => [...prev, { sender: "ai", text: data.response }]);
-      } else {
-        setChatMessages((prev) => [...prev, { sender: "ai", text: "I'm sorry, I couldn't process your request." }]);
-      }
-    })
-    .catch(err => {
-      setAiTyping(false);
-      console.error(err);
-      setChatMessages((prev) => [...prev, { sender: "ai", text: "Connection error. Please try again." }]);
-    });
+      .then(res => res.json())
+      .then(data => {
+        setAiTyping(false);
+        if (data.response) {
+          setChatMessages((prev) => [...prev, { sender: "ai", text: data.response }]);
+        } else {
+          setChatMessages((prev) => [...prev, { sender: "ai", text: "I'm sorry, I couldn't process your request." }]);
+        }
+      })
+      .catch(err => {
+        setAiTyping(false);
+        console.error(err);
+        setChatMessages((prev) => [...prev, { sender: "ai", text: "Connection error. Please try again." }]);
+      });
   };
 
   const handleSuggestionClick = (promptText) => {
@@ -171,17 +171,17 @@ export default function AITutorPage({ initialWord, onClearInitialWord, learnedWo
       },
       body: JSON.stringify({ message: promptText, wordId: wordId })
     })
-    .then(res => res.json())
-    .then(data => {
-      setAiTyping(false);
-      if (data.response) {
-        setChatMessages((prev) => [...prev, { sender: "ai", text: data.response }]);
-      }
-    })
-    .catch(err => {
-      setAiTyping(false);
-      console.error(err);
-    });
+      .then(res => res.json())
+      .then(data => {
+        setAiTyping(false);
+        if (data.response) {
+          setChatMessages((prev) => [...prev, { sender: "ai", text: data.response }]);
+        }
+      })
+      .catch(err => {
+        setAiTyping(false);
+        console.error(err);
+      });
   };
 
 
@@ -196,7 +196,7 @@ export default function AITutorPage({ initialWord, onClearInitialWord, learnedWo
 
     const firstQ = "Tell me about yourself, including where you are from and what you currently do.";
     setSessionQuestions([firstQ]);
-    
+
     // Speak first question
     setTimeout(() => {
       handleSpeakText(firstQ);
@@ -237,91 +237,91 @@ export default function AITutorPage({ initialWord, onClearInitialWord, learnedWo
       },
       body: JSON.stringify({ question, answer })
     })
-    .then(res => res.json())
-    .then(data => {
-      let evalResult = { feedback: "Good effort!", professionalWords: [], bandScore: 6.0 };
-      if (data.evaluation) {
-        try {
-          evalResult = JSON.parse(data.evaluation);
-        } catch (e) {
+      .then(res => res.json())
+      .then(data => {
+        let evalResult = { feedback: "Good effort!", professionalWords: [], bandScore: 6.0 };
+        if (data.evaluation) {
           try {
-            const match = data.evaluation.match(/\{[\s\S]*\}/);
-            if (match) evalResult = JSON.parse(match[0]);
-          } catch (e2) {
-            evalResult = { feedback: data.evaluation, professionalWords: [], bandScore: 6.5 };
+            evalResult = JSON.parse(data.evaluation);
+          } catch (e) {
+            try {
+              const match = data.evaluation.match(/\{[\s\S]*\}/);
+              if (match) evalResult = JSON.parse(match[0]);
+            } catch (e2) {
+              evalResult = { feedback: data.evaluation, professionalWords: [], bandScore: 6.5 };
+            }
           }
         }
-      }
-      
-      setAnswers(prev => {
-        const updated = [...prev];
-        if (updated[index]) {
-          updated[index] = {
-            ...updated[index],
-            evaluation: evalResult,
-            loading: false
-          };
-        }
-        return updated;
-      });
 
-      if (evalResult.professionalWords && evalResult.professionalWords.length > 0) {
-        evalResult.professionalWords.forEach(pWord => {
-          fetch(`${API_BASE_URL}/api/words/recommend`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
-            },
-            body: JSON.stringify({ word: pWord })
-          }).catch(err => console.error("Error auto-recommending word from IELTS:", err));
+        setAnswers(prev => {
+          const updated = [...prev];
+          if (updated[index]) {
+            updated[index] = {
+              ...updated[index],
+              evaluation: evalResult,
+              loading: false
+            };
+          }
+          return updated;
         });
-      }
-    })
-    .catch(err => {
-      console.error("Evaluation error:", err);
-      setAnswers(prev => {
-        const updated = [...prev];
-        if (updated[index]) {
-          updated[index] = {
-            ...updated[index],
-            evaluation: { feedback: "Evaluation service temporarily unavailable.", professionalWords: [], bandScore: 6.0 },
-            loading: false
-          };
+
+        if (evalResult.professionalWords && evalResult.professionalWords.length > 0) {
+          evalResult.professionalWords.forEach(pWord => {
+            fetch(`${API_BASE_URL}/api/words/recommend`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+              },
+              body: JSON.stringify({ word: pWord })
+            }).catch(err => console.error("Error auto-recommending word from IELTS:", err));
+          });
         }
-        return updated;
+      })
+      .catch(err => {
+        console.error("Evaluation error:", err);
+        setAnswers(prev => {
+          const updated = [...prev];
+          if (updated[index]) {
+            updated[index] = {
+              ...updated[index],
+              evaluation: { feedback: "Evaluation service temporarily unavailable.", professionalWords: [], bandScore: 6.0 },
+              loading: false
+            };
+          }
+          return updated;
+        });
       });
-    });
   };
 
   const handleProceedIelts = () => {
     stopListening();
     const currentQ = sessionQuestions[currentQuestionIdx];
     const currentAns = speechTranscript.trim() || "(No speech detected)";
-    
+
     const currentAnswerObj = {
       question: currentQ,
       answer: currentAns,
       evaluation: null,
       loading: true
     };
-    
+
     const updatedAnswers = [...answers, currentAnswerObj];
     const targetIdx = answers.length;
     setAnswers(updatedAnswers);
     setSpeechTranscript("");
-    
+
     triggerBackgroundEvaluation(currentQ, currentAns, targetIdx);
-    
+
     const nextIdx = currentQuestionIdx + 1;
     if (nextIdx < numQuestions) {
       setFetchingNextQuestion(true);
-      
+
       const history = updatedAnswers.map(ans => ({
         question: ans.question,
         answer: ans.answer
       }));
-      
+
       fetch(`${API_BASE_URL}/api/ai/ielts-next-question`, {
         method: "POST",
         headers: {
@@ -334,28 +334,28 @@ export default function AITutorPage({ initialWord, onClearInitialWord, learnedWo
           totalQuestions: numQuestions
         })
       })
-      .then(res => res.json())
-      .then(data => {
-        setFetchingNextQuestion(false);
-        const nextQ = data.nextQuestion || `Question ${nextIdx + 1}: How do you plan to use English in the future?`;
-        setSessionQuestions(prev => [...prev, nextQ]);
-        setCurrentQuestionIdx(nextIdx);
-        
-        setTimeout(() => {
-          handleSpeakText(nextQ);
-        }, 500);
-      })
-      .catch(err => {
-        setFetchingNextQuestion(false);
-        console.error("Error fetching next question:", err);
-        const fallbackQ = `How do you think speaking good English helps you in your career?`;
-        setSessionQuestions(prev => [...prev, fallbackQ]);
-        setCurrentQuestionIdx(nextIdx);
-        
-        setTimeout(() => {
-          handleSpeakText(fallbackQ);
-        }, 500);
-      });
+        .then(res => res.json())
+        .then(data => {
+          setFetchingNextQuestion(false);
+          const nextQ = data.nextQuestion || `Question ${nextIdx + 1}: How do you plan to use English in the future?`;
+          setSessionQuestions(prev => [...prev, nextQ]);
+          setCurrentQuestionIdx(nextIdx);
+
+          setTimeout(() => {
+            handleSpeakText(nextQ);
+          }, 500);
+        })
+        .catch(err => {
+          setFetchingNextQuestion(false);
+          console.error("Error fetching next question:", err);
+          const fallbackQ = `How do you think speaking good English helps you in your career?`;
+          setSessionQuestions(prev => [...prev, fallbackQ]);
+          setCurrentQuestionIdx(nextIdx);
+
+          setTimeout(() => {
+            handleSpeakText(fallbackQ);
+          }, 500);
+        });
     } else {
       setIeltsStep(2);
     }
@@ -391,7 +391,7 @@ export default function AITutorPage({ initialWord, onClearInitialWord, learnedWo
       });
 
       const avgBand = totalBand / answers.length;
-      
+
       const fluency = Math.min(9.0, Math.max(4.0, avgBand + (totalWordsCount > (answers.length * 10) ? 0.5 : -0.5) - (totalFillers > (answers.length * 1) ? 0.5 : 0)));
       const grammar = Math.min(9.0, Math.max(4.0, avgBand + (totalWordsCount > (answers.length * 15) ? 0.5 : -0.5)));
       const articulation = avgBand;
@@ -411,7 +411,7 @@ export default function AITutorPage({ initialWord, onClearInitialWord, learnedWo
   return (
     <div className="ai-tutor-container animate-fade-in">
       <header className="ai-tutor-header">
-        <h1 className="ai-tutor-title">AI Speaking & Prep Tutor</h1>
+        <h1 className="ai-tutor-title">Dicto - AI Speaking & Prep Tutor</h1>
         <div className="tutor-mode-tabs">
           <button
             className={`tutor-tab-btn ${activeMode === "ielts" ? "active" : ""}`}
@@ -630,8 +630,8 @@ export default function AITutorPage({ initialWord, onClearInitialWord, learnedWo
                   <h3>Evaluating Your Interview Responses</h3>
                   <p>Our AI model is performing a detailed IELTS speaking assessment of your responses...</p>
                   <div className="loading-progress-bar">
-                    <div 
-                      className="loading-progress-fill" 
+                    <div
+                      className="loading-progress-fill"
                       style={{ width: `${(answers.filter(a => !a.loading).length / answers.length) * 100}%` }}
                     />
                   </div>
@@ -699,7 +699,7 @@ export default function AITutorPage({ initialWord, onClearInitialWord, learnedWo
                   <div className="report-review-section">
                     <h3 className="review-section-title">Question-by-Question Review</h3>
                     <p className="review-section-sub">Detailed response feedback and professional word suggestions:</p>
-                    
+
                     <div className="review-cards-list">
                       {answers.map((ans, idx) => (
                         <div key={idx} className="review-card">
@@ -707,15 +707,15 @@ export default function AITutorPage({ initialWord, onClearInitialWord, learnedWo
                             <span className="review-card-number">Question {idx + 1}</span>
                             <span className="review-card-score">Band {ans.evaluation?.bandScore || "6.0"}</span>
                           </div>
-                          
+
                           <div className="review-q-text">
                             <strong>Question:</strong> "{ans.question}"
                           </div>
-                          
+
                           <div className="review-ans-text">
                             <strong>Your Response:</strong> "{ans.answer}"
                           </div>
-                          
+
                           <div className="review-feedback-block">
                             <span className="review-feedback-label">💡 What to Improve:</span>
                             <p>{ans.evaluation?.feedback || "No feedback available."}</p>

@@ -99,26 +99,26 @@ export default function Login({ onLogin, onRegister }) {
         password: loginForm.password
       })
     })
-    .then(res => {
-      if (!res.ok) {
-        return res.json().then(d => { throw new Error(d.error || d.message || "Invalid credentials"); });
-      }
-      return res.json();
-    })
-    .then(data => {
-      setLoading(false);
-      if (data.accessToken) {
-        localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
-        if (onLogin) onLogin(data.user);
-      } else {
-        setErrors({ email: "Login failed" });
-      }
-    })
-    .catch(err => {
-      setLoading(false);
-      setErrors({ email: err.message });
-    });
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(d => { throw new Error(d.error || d.message || "Invalid credentials"); });
+        }
+        return res.json();
+      })
+      .then(data => {
+        setLoading(false);
+        if (data.accessToken) {
+          localStorage.setItem("accessToken", data.accessToken);
+          localStorage.setItem("refreshToken", data.refreshToken);
+          if (onLogin) onLogin(data.user);
+        } else {
+          setErrors({ email: "Login failed" });
+        }
+      })
+      .catch(err => {
+        setLoading(false);
+        setErrors({ email: err.message });
+      });
   };
 
   const handleRegisterSubmit = (e) => {
@@ -133,8 +133,8 @@ export default function Login({ onLogin, onRegister }) {
     if (Object.keys(e2).length) return;
     setLoading(true);
 
-    const diffMapped = registerForm.difficulty === "Easy" ? "beginner" : 
-                       registerForm.difficulty === "Medium" ? "intermediate" : "advanced";
+    const diffMapped = registerForm.difficulty === "Easy" ? "beginner" :
+      registerForm.difficulty === "Medium" ? "intermediate" : "advanced";
 
     fetch(`${API_BASE_URL}/api/auth/register`, {
       method: "POST",
@@ -148,26 +148,26 @@ export default function Login({ onLogin, onRegister }) {
         wordCount: Number(registerForm.wordCount) || 5
       })
     })
-    .then(res => {
-      if (!res.ok) {
-        return res.json().then(d => { throw new Error(d.error || d.message || "Registration failed"); });
-      }
-      return res.json();
-    })
-    .then(data => {
-      setLoading(false);
-      if (data.accessToken) {
-        localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
-        if (onRegister) onRegister(data.user);
-      } else {
-        setErrors({ difficulty: "Registration failed" });
-      }
-    })
-    .catch(err => {
-      setLoading(false);
-      setErrors({ difficulty: err.message });
-    });
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(d => { throw new Error(d.error || d.message || "Registration failed"); });
+        }
+        return res.json();
+      })
+      .then(data => {
+        setLoading(false);
+        if (data.accessToken) {
+          localStorage.setItem("accessToken", data.accessToken);
+          localStorage.setItem("refreshToken", data.refreshToken);
+          if (onRegister) onRegister(data.user);
+        } else {
+          setErrors({ difficulty: "Registration failed" });
+        }
+      })
+      .catch(err => {
+        setLoading(false);
+        setErrors({ difficulty: err.message });
+      });
   };
 
   return (
@@ -352,9 +352,8 @@ export default function Login({ onLogin, onRegister }) {
                       <button
                         key={d}
                         type="button"
-                        className={`diff-pill${
-                          registerForm.difficulty === d ? " active" : ""
-                        }`}
+                        className={`diff-pill${registerForm.difficulty === d ? " active" : ""
+                          }`}
                         onClick={() => {
                           setReg("difficulty", d);
                           setErrors({});
