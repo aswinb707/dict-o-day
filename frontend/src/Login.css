@@ -207,7 +207,7 @@ body {
    RIGHT PANEL
 ══════════════════════════════ */
 .right-panel {
-  width: 880px;
+  width: 480px;
   flex-shrink: 0;
   background: var(--bg);
   display: flex;
@@ -218,8 +218,7 @@ body {
 
 .form-card {
   width: 100%;
-  max-width: 700px;
-  height: 80%;
+  max-width: 400px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 20px;
@@ -243,10 +242,6 @@ body {
   border: none;
   cursor: pointer;
   transition: color 0.15s, background 0.15s;
-}
-
-.container {
-  background: rgb(247, 139, 139);
 }
 
 .tab-btn:hover {
@@ -641,18 +636,227 @@ body {
   transform: translateY(-1px);
 }
 
-/* ── Responsive ── */
-@media (max-width: 860px) {
+/* ══════════════════════════════
+   RESPONSIVE BREAKPOINTS
+══════════════════════════════ */
+
+/* ── Large tablets / small laptops (≤1100px) ──
+   Shrink the left panel content so it doesn't feel cramped */
+@media (max-width: 1100px) {
   .left-panel {
+    padding: 40px 36px;
+  }
+
+  .lp-brand-name {
+    font-size: 56px;
+  }
+
+  .lp-headline {
+    font-size: 26px;
+  }
+
+  .lp-inner {
+    gap: 36px;
+  }
+
+  .lp-stats {
+    gap: 16px;
+    padding: 16px 18px;
+  }
+
+  .right-panel {
+    width: 420px;
+    padding: 32px 24px;
+  }
+}
+
+/* ── Tablets (≤860px) ──
+   Hide left panel, full-width form */
+@media (max-width: 860px) {
+  .login-root {
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .left-panel {
+    /* Show a compact banner instead of hiding entirely */
+    flex: none;
+    padding: 24px 24px 20px;
+    justify-content: flex-start;
+    min-height: auto;
+  }
+
+  /* Hide decorative elements on tablet banner */
+  .left-panel::after {
+    width: 200px;
+    height: 200px;
+    bottom: -40px;
+    right: -40px;
+  }
+
+  .lp-inner {
+    gap: 0;
+    flex-direction: row;
+    align-items: center;
+    max-width: 100%;
+  }
+
+  /* Only show the brand on the compact banner */
+  .lp-hero,
+  .lp-stats {
     display: none;
+  }
+
+  .lp-brand-name {
+    font-size: 32px;
   }
 
   .right-panel {
     width: 100%;
-    padding: 24px 16px;
+    flex: 1;
+    padding: 28px 20px;
+    align-items: flex-start;
+  }
+
+  .form-card {
+    max-width: 100%;
   }
 }
 
+/* ── Mobile (≤520px) ──
+   Tighten spacing, ensure form fills width comfortably */
+@media (max-width: 520px) {
+  .left-panel {
+    padding: 18px 16px 16px;
+  }
+
+  .lp-brand-name {
+    font-size: 26px;
+  }
+
+  .lp-brand-icon {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .right-panel {
+    padding: 20px 12px 32px;
+    align-items: flex-start;
+  }
+
+  .form-card {
+    border-radius: 16px;
+  }
+
+  .form-body {
+    padding: 20px 18px 24px;
+    gap: 16px;
+  }
+
+  .form-title {
+    font-size: 20px;
+  }
+
+  .tab-btn {
+    padding: 13px 10px;
+    font-size: 13px;
+  }
+
+  /* Stack difficulty pills vertically if very tight */
+  .diff-row {
+    gap: 6px;
+  }
+
+  .diff-pill {
+    padding: 10px 6px;
+    font-size: 12px;
+  }
+
+  .diff-icon {
+    font-size: 18px;
+  }
+
+  .lp-stats {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .lp-stat-num {
+    font-size: 17px;
+  }
+}
+
+/* ── Extra small / very narrow phones (≤380px) ── */
+@media (max-width: 380px) {
+  .right-panel {
+    padding: 16px 8px 28px;
+  }
+
+  .form-body {
+    padding: 18px 14px 20px;
+  }
+
+  .reg-btn-row {
+    flex-direction: column;
+  }
+
+  .back-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .diff-row {
+    flex-wrap: wrap;
+  }
+
+  .diff-pill {
+    flex: 1 1 calc(50% - 4px);
+    min-width: 0;
+  }
+}
+
+/* ── Landscape phones (short viewport) ── */
+@media (max-height: 600px) and (max-width: 860px) {
+  .left-panel {
+    padding: 12px 16px;
+  }
+
+  .lp-brand-name {
+    font-size: 22px;
+  }
+
+  .right-panel {
+    padding: 12px 16px 20px;
+  }
+
+  .form-body {
+    gap: 12px;
+    padding: 16px 18px 20px;
+  }
+
+  .form-title {
+    font-size: 18px;
+  }
+}
+
+/* ── Wide / ultrawide screens (≥1400px) ──
+   Cap inner content so it doesn't stretch too far */
+@media (min-width: 1400px) {
+  .left-panel {
+    padding: 56px 72px;
+  }
+
+  .lp-inner {
+    max-width: 480px;
+  }
+
+  .right-panel {
+    width: 520px;
+    padding: 48px 40px;
+  }
+}
+
+/* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   .lp-word-chip {
     animation: none;

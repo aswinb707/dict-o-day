@@ -76,7 +76,7 @@ export default function ExplorePage({ onAddWordSuccess, onBack }) {
   const handleAddWord = () => {
     if (!wordData) return;
     const token = localStorage.getItem("accessToken");
-    
+
     fetch(`${API_BASE_URL}/api/words/recommend`, {
       method: "POST",
       headers: {
@@ -130,9 +130,6 @@ export default function ExplorePage({ onAddWordSuccess, onBack }) {
   return (
     <div className="explore-container">
       <div className="explore-header">
-        <button className="back-btn" onClick={onBack}>
-          ← Back to Dashboard
-        </button>
         <h1 className="explore-title">Explore Vocabulary</h1>
         <p className="explore-subtitle">
           Search any word. If it's a simple word, we will create a <strong>Fused Learning Card</strong> to teach a related IELTS term alongside it.
@@ -248,12 +245,12 @@ export default function ExplorePage({ onAddWordSuccess, onBack }) {
       {wordData && (
         <div className="preview-section">
           <div className="preview-label">PREVIEW CARD</div>
-          
+
           <div className="preview-card" style={getPreviewCardStyle(wordData)}>
             {wordData.fusedWord && (
               <div className="fused-badge">⭐ FUSED LEARNING CARD</div>
             )}
-            
+
             <div className="card-top-pos">
               <span className="preview-pos-tag">{wordData.partOfSpeech}</span>
             </div>
@@ -267,7 +264,7 @@ export default function ExplorePage({ onAddWordSuccess, onBack }) {
               <p className="preview-def">
                 <strong>Definition:</strong> {wordData.definition}
               </p>
-              
+
               {wordData.inASentence && (
                 <p className="preview-sentence">
                   <strong>Example:</strong> "{wordData.inASentence}"
