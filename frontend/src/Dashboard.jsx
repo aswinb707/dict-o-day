@@ -213,7 +213,7 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
             antonyms: p.word.antonyms || "N/A",
             mastery: Math.round(p.masteryScore * 100),
             status: p.status,
-            dateLearned: p.firstSeenAt ? p.firstSeenAt.split("T")[0] : new Date().toISOString().split("T")[0],
+            dateLearned: p.lastReviewedAt ? p.lastReviewedAt.split("T")[0] : (p.firstSeenAt ? p.firstSeenAt.split("T")[0] : new Date().toISOString().split("T")[0]),
             fusedWord: p.word.fusedWord,
             fusedDefinition: p.word.fusedDefinition,
             fusedPronunciation: p.word.fusedPronunciation,
