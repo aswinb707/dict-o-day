@@ -102,6 +102,12 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
   const [selectedWord, setSelectedWord] = useState(null);
   const [initialAIWord, setInitialAIWord] = useState("");
 
+  // Persistent test state to preserve progress when switching tabs
+  const [testQuestions, setTestQuestions] = useState([]);
+  const [testAnswers, setTestAnswers] = useState({});
+  const [testSubmitted, setTestSubmitted] = useState(false);
+  const [testScore, setTestScore] = useState(0);
+
   const [stats, setStats] = useState([
     { label: "Day streak", value: "0", icon: "🔥" },
     { label: "Words learned", value: "0", icon: "📚" },
@@ -207,7 +213,7 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
             antonyms: p.word.antonyms || "N/A",
             mastery: Math.round(p.masteryScore * 100),
             status: p.status,
-            dateLearned: p.lastReviewedAt ? p.lastReviewedAt.split("T")[0] : new Date().toISOString().split("T")[0],
+            dateLearned: p.firstSeenAt ? p.firstSeenAt.split("T")[0] : new Date().toISOString().split("T")[0],
             fusedWord: p.word.fusedWord,
             fusedDefinition: p.word.fusedDefinition,
             fusedPronunciation: p.word.fusedPronunciation,
@@ -684,7 +690,18 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
 
         {/* TEST VIEW */}
         {activeNav === "test" && (
-          <Test learnedWords={learnedWords} onTestCompleted={loadDashboardData} />
+          <Test
+            learnedWords={learnedWords}
+            onTestCompleted={loadDashboardData}
+            questions={testQuestions}
+            setQuestions={setTestQuestions}
+            userAnswers={testAnswers}
+            setUserAnswers={setTestAnswers}
+            submitted={testSubmitted}
+            setSubmitted={setTestSubmitted}
+            score={testScore}
+            setScore={setTestScore}
+          />
         )}
 
         {/* JOURNAL VIEW */}

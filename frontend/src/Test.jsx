@@ -8,17 +8,39 @@ const COMMON_DISTRACTORS = [
   "Synergy", "Ubiquitous", "Solitude", "Eloquence", "Cacophony"
 ];
 
-export default function Test({ learnedWords = [], onTestCompleted }) {
-  const [questions, setQuestions] = useState([]);
-  const [userAnswers, setUserAnswers] = useState({}); // Stores answers: { questionIndex: value }
-  const [submitted, setSubmitted] = useState(false);
-  const [score, setScore] = useState(0);
+export default function Test({
+  learnedWords = [],
+  onTestCompleted,
+  questions: propQuestions,
+  setQuestions: propSetQuestions,
+  userAnswers: propUserAnswers,
+  setUserAnswers: propSetUserAnswers,
+  submitted: propSubmitted,
+  setSubmitted: propSetSubmitted,
+  score: propScore,
+  setScore: propSetScore
+}) {
+  const [localQuestions, localSetQuestions] = useState([]);
+  const [localUserAnswers, localSetUserAnswers] = useState({});
+  const [localSubmitted, localSetSubmitted] = useState(false);
+  const [localScore, localSetScore] = useState(0);
 
-  // Generate test questions when component mounts or pool changes
+  const questions = propQuestions !== undefined ? propQuestions : localQuestions;
+  const setQuestions = propSetQuestions !== undefined ? propSetQuestions : localSetQuestions;
+  const userAnswers = propUserAnswers !== undefined ? propUserAnswers : localUserAnswers;
+  const setUserAnswers = propSetUserAnswers !== undefined ? propSetUserAnswers : localSetUserAnswers;
+  const submitted = propSubmitted !== undefined ? propSubmitted : localSubmitted;
+  const setSubmitted = propSetSubmitted !== undefined ? propSetSubmitted : localSetSubmitted;
+  const score = propScore !== undefined ? propScore : localScore;
+  const setScore = propSetScore !== undefined ? propSetScore : localSetScore;
+
+  // Generate test questions when component mounts or pool changes, ONLY if questions list is empty
   useEffect(() => {
-    generateTest();
+    if (questions.length === 0 && learnedWords.length > 0) {
+      generateTest();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [learnedWords]);
+  }, [learnedWords, questions.length]);
 
   const generateTest = () => {
     if (learnedWords.length === 0) return;
