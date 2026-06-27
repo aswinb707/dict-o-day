@@ -94,9 +94,6 @@ public class SessionService {
         // Update streak with 0 additional words (since we already counted them in markWordSeen)
         streakService.updateStreak(userId, 0);
 
-        // Clear daily word cache so next day gets fresh words
-        redisService.clearDailyWords(userId);
-
         log.info("Session {} completed for user {}. Words learned: {}", sessionId, userId, session.getWordsLearned());
         return session;
     }
