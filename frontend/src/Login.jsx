@@ -200,24 +200,7 @@ export default function Login({ onLogin, onRegister }) {
             </p>
           </div>
 
-          <div className="lp-stats">
-            <div className="lp-stat">
-              <span className="lp-stat-num">10K+</span>
-              <span className="lp-stat-lbl">Words in library</span>
-            </div>
-            <div className="lp-divider" />
-            <div className="lp-stat">
-              <span className="lp-stat-num">87%</span>
-              <span className="lp-stat-lbl">Avg. retention</span>
-            </div>
-            <div className="lp-divider" />
-            <div className="lp-stat">
-              <span className="lp-stat-num">4.9 ★</span>
-              <span className="lp-stat-lbl">User rating</span>
-            </div>
-          </div>
-        </div>
-      </div>
+    
 
       {/* Right Panel */}
       <div className="right-panel">
