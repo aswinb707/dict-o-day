@@ -446,6 +446,9 @@ public class WordService {
         // Ensure 100% mastery and status is mastered
         progress.setMasteryScore(1.0);
         progress.setStatus("mastered");
+        if (progress.getMasteredAt() == null) {
+            progress.setMasteredAt(java.time.LocalDateTime.now());
+        }
 
         return progressRepository.save(progress);
     }
@@ -488,8 +491,12 @@ public class WordService {
         // Status transition
         if (progress.getMasteryScore() >= 0.8 && progress.getTimesSeen() >= 3) {
             progress.setStatus("mastered");
+            if (progress.getMasteredAt() == null) {
+                progress.setMasteredAt(java.time.LocalDateTime.now());
+            }
         } else if (progress.getTimesSeen() > 0) {
             progress.setStatus("learning");
+            progress.setMasteredAt(null);
         }
     }
 }

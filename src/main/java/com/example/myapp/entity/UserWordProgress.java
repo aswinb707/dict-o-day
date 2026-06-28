@@ -48,6 +48,9 @@ public class UserWordProgress {
     @Column(name = "last_reviewed_at")
     private LocalDateTime lastReviewedAt;
 
+    @Column(name = "mastered_at")
+    private LocalDateTime masteredAt;
+
     @Column(name = "postponed_until")
     private java.time.LocalDate postponedUntil;
 

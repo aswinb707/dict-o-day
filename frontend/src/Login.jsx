@@ -198,9 +198,9 @@ export default function Login({ onLogin, onRegister }) {
             <p className="lp-sub">
               Curated words. AI-powered context. Streaks that actually stick.
             </p>
-          </div>
-
-    
+        </div>
+      </div>
+    </div>
 
       {/* Right Panel */}
       <div className="right-panel">
