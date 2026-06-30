@@ -16,8 +16,49 @@ import java.util.List;
 public class DataInitializer {
 
     @Bean
-    public CommandLineRunner seedWords(WordRepository wordRepository) {
+    public CommandLineRunner seedWords(WordRepository wordRepository, org.springframework.jdbc.core.JdbcTemplate jdbcTemplate) {
         return args -> {
+            log.info("Starting database cleanup for French and German references...");
+            try {
+                jdbcTemplate.execute("DELETE FROM session_words WHERE session_id IN (SELECT id FROM daily_sessions WHERE language IN ('french', 'german'))");
+            } catch (Exception e) {
+                log.warn("Could not delete from session_words: {}", e.getMessage());
+            }
+            try {
+                jdbcTemplate.execute("DELETE FROM daily_sessions WHERE language IN ('french', 'german')");
+            } catch (Exception e) {
+                log.warn("Could not delete from daily_sessions: {}", e.getMessage());
+            }
+            try {
+                jdbcTemplate.execute("DELETE FROM calendar_entries WHERE language IN ('french', 'german')");
+            } catch (Exception e) {
+                log.warn("Could not delete from calendar_entries: {}", e.getMessage());
+            }
+            try {
+                jdbcTemplate.execute("DELETE FROM tests WHERE language IN ('french', 'german')");
+            } catch (Exception e) {
+                log.warn("Could not delete from tests: {}", e.getMessage());
+            }
+            try {
+                jdbcTemplate.execute("DELETE FROM words WHERE language IN ('french', 'german')");
+            } catch (Exception e) {
+                log.warn("Could not delete from words: {}", e.getMessage());
+            }
+            try {
+                jdbcTemplate.execute("UPDATE users SET target_language = null WHERE target_language IN ('french', 'german')");
+            } catch (Exception e) {
+                log.warn("Could not update users target_language: {}", e.getMessage());
+            }
+            try {
+                jdbcTemplate.execute("ALTER TABLE users DROP COLUMN IF EXISTS last_active_french");
+                jdbcTemplate.execute("ALTER TABLE users DROP COLUMN IF EXISTS last_active_german");
+                jdbcTemplate.execute("ALTER TABLE users DROP COLUMN IF EXISTS streak_french");
+                jdbcTemplate.execute("ALTER TABLE users DROP COLUMN IF EXISTS streak_german");
+                log.info("Dropped French and German columns from users table successfully.");
+            } catch (Exception e) {
+                log.warn("Could not drop French and German columns from users table: {}", e.getMessage());
+            }
+
             if (wordRepository.count() == 0) {
                 List<Word> words = List.of(
                     Word.builder().word("Ubiquitous").pronunciation("yoo-BIK-wih-tuhs").definition("Present, appearing, or found everywhere.").partOfSpeech("adjective").inASentence("Mobile phones have become ubiquitous in modern society.").examples(List.of("Smartphones are ubiquitous in urban areas.", "The ubiquitous coffee chain has stores on every corner.")).tags(List.of("advanced", "competitive_exam")).synonyms("omnipresent, ever-present, everywhere, pervasive").antonyms("rare, scarce, infrequent, uncommon").build(),
