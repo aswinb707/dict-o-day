@@ -82,7 +82,8 @@
   color: var(--text-2);
 }
 
-.form-field input, .form-field select {
+.form-field input,
+.form-field select {
   padding: 10px 12px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
@@ -91,7 +92,8 @@
   color: var(--text-1);
 }
 
-.form-field input:focus, .form-field select:focus {
+.form-field input:focus,
+.form-field select:focus {
   outline: none;
   border-color: var(--amber);
 }
@@ -283,6 +285,7 @@
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -293,6 +296,7 @@
   .journal-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .form-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -302,7 +306,115 @@
   .journal-grid {
     grid-template-columns: 1fr;
   }
+
   .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .journal-header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .journal-title {
+    font-size: 21px;
+  }
+
+  .journal-sub {
+    font-size: 12.5px;
+  }
+
+  .add-word-toggle-btn {
+    padding: 9px 14px;
+    font-size: 13px;
+  }
+
+  .add-word-form {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .add-word-form h3 {
+    font-size: 14.5px;
+  }
+
+  .form-field input,
+  .form-field select,
+  .sentence-input {
+    padding: 9px 10px;
+    font-size: 13.5px;
+  }
+
+  .add-word-submit-btn {
+    align-self: stretch;
+    text-align: center;
+    padding: 11px;
+    font-size: 13.5px;
+  }
+
+  .journal-search-input {
+    padding: 12px 12px 12px 40px;
+    font-size: 14px;
+  }
+
+  .search-icon {
+    left: 12px;
+    font-size: 14px;
+  }
+
+  .search-clear-btn {
+    right: 12px;
+  }
+
+  .journal-empty-state {
+    padding: 36px 20px;
+  }
+
+  .empty-icon {
+    font-size: 32px;
+  }
+
+  .journal-word-card {
+    padding: 16px;
+    gap: 6px;
+  }
+
+  .journal-word-title {
+    font-size: 16px;
+  }
+
+  .journal-pos-tag {
+    font-size: 9px;
+    padding: 2px 7px;
+  }
+
+  .journal-word-pron {
+    font-size: 11px;
+  }
+
+  .journal-word-def {
+    font-size: 12.5px;
+  }
+
+  .mastery-lbl {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 400px) {
+  .journal-container {
+    gap: 18px;
+  }
+
+  .journal-title {
+    font-size: 19px;
+  }
+
+  .journal-word-card {
+    padding: 14px;
+  }
+
+  .add-word-form {
+    padding: 14px;
   }
 }
