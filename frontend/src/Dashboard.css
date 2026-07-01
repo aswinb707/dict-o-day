@@ -1168,3 +1168,38 @@ body {
     transition: none;
   }
 }
+
+/* ── Mobile (≤480px) ── */
+@media (max-width: 480px) {
+  ...
+
+  .sidebar-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-top: none;
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 201;
+  }
+
+  .sidebar-bottom .user-pill {
+    padding: 4px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    border-radius: 50%;
+  }
+
+  .sidebar-bottom .user-info {
+    display: none;
+  }
+
+  ...
+
+  /* FIX: reserve space so the fixed avatar circle doesn't sit on top of the streak badge */
+  .topbar {
+    padding-right: 46px;
+  }
+}
