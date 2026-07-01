@@ -68,6 +68,27 @@ export default function JournalPage({ learnedWords, onWordSelect, onAddCustomWor
   };
 
   return (
+    <div className="journal-header-actions">
+          <a
+            href="https://ielts.org/test-centres"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="booking-btn booking-btn--ielts"
+          >
+            📋 IELTS Booking
+          </a>
+          <a
+            href="https://toeflibt.ets.org/welcome"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="booking-btn booking-btn--toefl"
+          >
+            📝 TOEFL Booking
+          </a>
+          <button className="add-word-toggle-btn" onClick={() => setShowAddForm(!showAddForm)}>
+            {showAddForm ? "Close Form" : "+ Add Custom Word"}
+          </button>
+        </div>
     <div className="journal-container animate-fade-in">
       <header className="journal-header">
         <div>
