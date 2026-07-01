@@ -319,35 +319,6 @@
   max-width: 400px;
 }
 
-@media (max-width: 640px) {
-
-  .study-word-card,
-  .quiz-card {
-    width: 100%;
-    height: 320px;
-  }
-
-  .learn-controls-row {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .center-actions {
-    width: 100%;
-  }
-
-  .mark-learned-btn,
-  .details-view-btn {
-    flex: 1;
-    text-align: center;
-  }
-
-  .nav-arrow-btn {
-    width: 100%;
-    text-align: center;
-  }
-}
-
 /* Quiz Card UI Styles */
 .quiz-card {
   width: 60%;
@@ -489,4 +460,166 @@
 .root {
   align-items: center;
   justify-content: center;
+}
+
+/* ===== Tablet ===== */
+@media (max-width: 1024px) {
+  .learn-card-workspace {
+    width: 85%;
+  }
+
+  .study-word-card {
+    width: 420px;
+    height: 260px;
+  }
+
+  .quiz-card {
+    width: 75%;
+  }
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 640px) {
+
+  .learn-container {
+    gap: 18px;
+  }
+
+  .learn-header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .learn-title {
+    font-size: 21px;
+  }
+
+  .learn-sub {
+    font-size: 12.5px;
+  }
+
+  .learn-progress-indicator {
+    font-size: 12px;
+    padding: 5px 12px;
+  }
+
+  .learn-card-workspace {
+    width: 100%;
+    padding: 10px 0;
+  }
+
+  .study-word-card,
+  .quiz-card {
+    width: 100%;
+    height: 320px;
+  }
+
+  .study-face {
+    padding: 18px;
+  }
+
+  .study-word-title {
+    font-size: 26px;
+  }
+
+  .study-back-title {
+    font-size: 20px;
+  }
+
+  .study-word-pron {
+    font-size: 13.5px;
+  }
+
+  .study-audio-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .study-def-text {
+    font-size: 13.5px;
+  }
+
+  .study-sentence-text {
+    font-size: 12px;
+  }
+
+  .study-pos-tag {
+    font-size: 9px;
+    padding: 2px 7px;
+  }
+
+  .learn-controls-row {
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .center-actions {
+    width: 100%;
+  }
+
+  .mark-learned-btn,
+  .details-view-btn {
+    flex: 1;
+    text-align: center;
+    padding: 11px 16px;
+    font-size: 13.5px;
+  }
+
+  .nav-arrow-btn {
+    width: 100%;
+    text-align: center;
+    padding: 11px 16px;
+    font-size: 13.5px;
+  }
+
+  .quiz-card {
+    padding: 16px 18px;
+  }
+
+  .quiz-question-text {
+    font-size: 13px;
+  }
+
+  .quiz-option-btn {
+    padding: 9px 12px;
+    font-size: 12px;
+  }
+
+  .learn-empty-state {
+    padding: 48px 16px;
+  }
+
+  .empty-emoji {
+    font-size: 38px;
+  }
+
+  .learn-empty-state h3 {
+    font-size: 16px;
+  }
+
+  .learn-empty-state p {
+    font-size: 13px;
+  }
+}
+
+/* ===== Small phones ===== */
+@media (max-width: 400px) {
+
+  .study-word-card,
+  .quiz-card {
+    height: 300px;
+  }
+
+  .study-word-title {
+    font-size: 22px;
+  }
+
+  .study-face {
+    padding: 14px;
+  }
+
+  .learn-title {
+    font-size: 19px;
+  }
 }
