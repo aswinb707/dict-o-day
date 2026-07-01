@@ -1,16 +1,22 @@
+/* ── Dict-o-Day AI Tutor ── */
+
 .ai-tutor-container {
   display: flex;
   flex-direction: column;
   gap: 24px;
   width: 100%;
+  min-width: 0;
 }
 
+/* ── Header ── */
 .ai-tutor-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid var(--border);
   padding-bottom: 16px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .ai-tutor-title {
@@ -19,11 +25,13 @@
   color: rgba(0, 0, 0, 0.958);
 }
 
+/* ── Mode tabs ── */
 .tutor-mode-tabs {
   display: flex;
   background: var(--surface-2);
   border-radius: var(--radius-sm);
   padding: 4px;
+  flex-shrink: 0;
 }
 
 .tutor-tab-btn {
@@ -36,6 +44,9 @@
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.15s;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .tutor-tab-btn.active {
@@ -44,7 +55,9 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
-/* Chat Explainer Interface */
+/* ══════════════════════════
+   CHAT INTERFACE
+══════════════════════════ */
 .chat-interface-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -53,6 +66,7 @@
   display: flex;
   flex-direction: column;
   height: 520px;
+  min-width: 0;
 }
 
 .chat-messages-container {
@@ -65,6 +79,7 @@
   background: var(--bg);
   border-top-left-radius: var(--radius);
   border-top-right-radius: var(--radius);
+  -webkit-overflow-scrolling: touch;
 }
 
 .chat-message-bubble {
@@ -109,6 +124,8 @@
   font-size: 14px;
   line-height: 1.5;
   box-shadow: var(--shadow);
+  word-break: break-word;
+  min-width: 0;
 }
 
 .chat-message-bubble.user .chat-bubble-text {
@@ -117,6 +134,7 @@
   border-color: rgba(239, 159, 39, 0.2);
 }
 
+/* Typing dots */
 .typing-indicator span {
   font-size: 18px;
   animation: bounce 1.4s infinite both;
@@ -133,12 +151,16 @@
   animation-delay: .4s;
 }
 
+/* Suggestion chips */
 .suggestions-row {
   display: flex;
   gap: 10px;
   padding: 12px 24px;
   background: var(--surface);
   border-top: 1px solid var(--border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  flex-wrap: nowrap;
 }
 
 .suggestion-chip {
@@ -151,6 +173,9 @@
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .suggestion-chip:hover {
@@ -159,6 +184,7 @@
   border-color: rgba(239, 159, 39, 0.2);
 }
 
+/* Chat input bar */
 .chat-input-bar {
   display: flex;
   padding: 16px 24px;
@@ -167,16 +193,19 @@
   border-bottom-left-radius: var(--radius);
   border-bottom-right-radius: var(--radius);
   gap: 12px;
+  align-items: center;
 }
 
 .chat-field-input {
   flex: 1;
+  min-width: 0;
   padding: 12px 16px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   font-size: 14px;
   background: var(--bg);
   color: var(--text-1);
+  font-family: inherit;
 }
 
 .chat-field-input:focus {
@@ -197,19 +226,25 @@
   align-items: center;
   justify-content: center;
   transition: background 0.15s;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .chat-send-btn:hover {
   background: var(--amber-dark);
 }
 
-/* IELTS interface layout */
+/* ══════════════════════════
+   IELTS INTERFACE
+══════════════════════════ */
 .ielts-interface-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-card);
   padding: 32px;
+  min-width: 0;
 }
 
 .ielts-start-screen {
@@ -280,13 +315,15 @@
   font-size: 15px;
   cursor: pointer;
   transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .ielts-start-btn:hover {
   background: var(--amber-dark);
 }
 
-/* Exam screen layout */
+/* Exam screen */
 .ielts-exam-screen {
   display: flex;
   flex-direction: column;
@@ -342,6 +379,7 @@
   border-radius: 999px;
   cursor: pointer;
   transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .replay-question-btn:hover {
@@ -354,8 +392,10 @@
   font-weight: 700;
   color: var(--text-1);
   line-height: 1.5;
+  word-break: break-word;
 }
 
+/* Voice recorder */
 .voice-recorder-area {
   display: flex;
   flex-direction: column;
@@ -364,7 +404,6 @@
   padding: 16px 0;
 }
 
-/* Voice waveform animation */
 .voice-wave-container {
   height: 80px;
   display: flex;
@@ -419,6 +458,8 @@
 .recorder-buttons {
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .record-toggle-btn {
@@ -429,6 +470,8 @@
   font-size: 14px;
   cursor: pointer;
   transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .record-toggle-btn.start-rec {
@@ -474,6 +517,7 @@
   line-height: 1.5;
   font-style: italic;
   min-height: 40px;
+  word-break: break-word;
 }
 
 .exam-next-btn {
@@ -487,13 +531,15 @@
   cursor: pointer;
   width: 100%;
   transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .exam-next-btn:hover {
   background: #000;
 }
 
-/* Report results panel */
+/* ── Report results ── */
 .ielts-report-screen {
   display: flex;
   flex-direction: column;
@@ -543,6 +589,7 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 14px rgba(239, 159, 39, 0.15);
+  flex-shrink: 0;
 }
 
 .band-label {
@@ -570,6 +617,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-width: 0;
 }
 
 .sectional-score-item {
@@ -609,10 +657,11 @@
 .report-detailed-stats {
   display: flex;
   gap: 16px;
+  flex-wrap: wrap;
 }
 
 .report-stat-pill {
-  flex: 1;
+  flex: 1 1 120px;
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -620,6 +669,7 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
 }
 
 .stat-pill-label {
@@ -653,6 +703,7 @@
   font-size: 14px;
   color: var(--text-2);
   line-height: 1.6;
+  word-break: break-word;
 }
 
 .ielts-retry-btn {
@@ -665,111 +716,16 @@
   font-size: 15px;
   cursor: pointer;
   transition: all 0.15s;
+  width: 100%;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .ielts-retry-btn:hover {
   background: var(--amber-dark);
 }
 
-@keyframes bounce {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-4px);
-  }
-}
-
-@keyframes scaleUpDown {
-
-  0%,
-  100% {
-    transform: scaleY(1);
-  }
-
-  50% {
-    transform: scaleY(0.4);
-  }
-}
-
-@media (max-width: 768px) {
-  .report-scores-summary {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    gap: 20px;
-  }
-
-  .sectional-scores-list {
-    width: 100%;
-  }
-}
-
-/* Interactive IELTS evaluation feedback style */
-.ielts-feedback-box {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 20px;
-  margin-top: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  text-align: left;
-}
-
-.ielts-feedback-score-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.ielts-feedback-badge {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--green);
-  background: rgba(99, 153, 34, 0.08);
-  padding: 4px 10px;
-  border-radius: 999px;
-  text-transform: uppercase;
-}
-
-.ielts-feedback-text {
-  font-size: 14px;
-  color: var(--text-2);
-  line-height: 1.5;
-}
-
-.ielts-professional-words {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.ielts-professional-label {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text-3);
-  text-transform: uppercase;
-}
-
-.ielts-professional-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.ielts-professional-chip {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--amber-dark);
-  background: var(--amber-light);
-  padding: 4px 12px;
-  border-radius: 999px;
-}
-
+/* ── Word learning banner ── */
 .word-learning-banner {
   display: flex;
   justify-content: space-between;
@@ -779,6 +735,8 @@
   padding: 10px 20px;
   font-size: 14px;
   color: var(--text-1);
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .clear-focus-btn {
@@ -791,6 +749,8 @@
   font-size: 12px;
   font-weight: 500;
   transition: all 0.2s ease;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .clear-focus-btn:hover {
@@ -798,7 +758,7 @@
   color: white;
 }
 
-/* Question Count Selector styles */
+/* ── Question count selector ── */
 .ielts-question-count-selector {
   display: flex;
   flex-direction: column;
@@ -817,6 +777,8 @@
 .ielts-question-count-selector .count-buttons {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .ielts-question-count-selector .count-btn {
@@ -833,6 +795,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .ielts-question-count-selector .count-btn:hover {
@@ -848,7 +811,7 @@
   box-shadow: 0 4px 12px rgba(239, 159, 39, 0.25);
 }
 
-/* Examiner Thinking Card styles */
+/* ── Examiner thinking card ── */
 .examiner-thinking-card {
   background: var(--bg);
   border: 1px solid var(--border);
@@ -877,7 +840,7 @@
   color: var(--text-3);
 }
 
-/* Report Loading Container */
+/* ── Report loading ── */
 .report-loading-container {
   display: flex;
   flex-direction: column;
@@ -907,6 +870,7 @@
   font-size: 14px;
   color: var(--text-2);
   max-width: 400px;
+  word-break: break-word;
 }
 
 .loading-progress-bar {
@@ -932,7 +896,7 @@
   text-transform: uppercase;
 }
 
-/* Question-by-Question Review styles */
+/* ── Review section ── */
 .report-review-section {
   display: flex;
   flex-direction: column;
@@ -979,6 +943,8 @@
   border-bottom: 1px solid var(--border);
   padding-bottom: 10px;
   margin-bottom: 4px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .review-card-number {
@@ -1000,6 +966,7 @@
   font-size: 14px;
   color: var(--text-2);
   line-height: 1.5;
+  word-break: break-word;
 }
 
 .review-ans-text {
@@ -1010,6 +977,7 @@
   padding: 10px 12px;
   border-radius: 6px;
   border-left: 3px solid var(--border);
+  word-break: break-word;
 }
 
 .review-feedback-block {
@@ -1030,6 +998,7 @@
   color: var(--text-2);
   line-height: 1.5;
   margin: 0;
+  word-break: break-word;
 }
 
 .review-words-block {
@@ -1061,8 +1030,97 @@
   border-radius: 999px;
 }
 
-.animate-spin {
-  animation: spin 1s linear infinite;
+/* ── IELTS feedback box ── */
+.ielts-feedback-box {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.ielts-feedback-score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ielts-feedback-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--green);
+  background: rgba(99, 153, 34, 0.08);
+  padding: 4px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.ielts-feedback-text {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.ielts-professional-words {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ielts-professional-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+}
+
+.ielts-professional-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ielts-professional-chip {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--amber-dark);
+  background: var(--amber-light);
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+/* ══════════════════════════
+   KEYFRAMES
+══════════════════════════ */
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes scaleUpDown {
+
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(0.4);
+  }
 }
 
 @keyframes spin {
@@ -1072,5 +1130,372 @@
 
   to {
     transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* ══════════════════════════
+   RESPONSIVE
+══════════════════════════ */
+
+/* ── Tablets (≤1024px) ── */
+@media (max-width: 1024px) {
+  .chat-interface-card {
+    height: 480px;
+  }
+
+  .chat-message-bubble {
+    max-width: 85%;
+  }
+
+  .report-scores-summary {
+    grid-template-columns: 160px 1fr;
+    gap: 20px;
+  }
+
+  .band-score-circle {
+    width: 130px;
+    height: 130px;
+  }
+
+  .band-value {
+    font-size: 44px;
+  }
+
+  .sectional-score-item {
+    grid-template-columns: 80px 1fr 36px;
+    gap: 10px;
+  }
+}
+
+/* ── Small tablets (≤768px) ── */
+@media (max-width: 768px) {
+  .ai-tutor-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ai-tutor-title {
+    font-size: 22px;
+  }
+
+  .tutor-mode-tabs {
+    width: 100%;
+  }
+
+  .tutor-tab-btn {
+    flex: 1;
+    text-align: center;
+  }
+
+  .chat-interface-card {
+    height: 460px;
+  }
+
+  .chat-messages-container {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .chat-message-bubble {
+    max-width: 90%;
+  }
+
+  .suggestions-row {
+    padding: 10px 16px;
+    gap: 8px;
+  }
+
+  .chat-input-bar {
+    padding: 12px 16px;
+  }
+
+  .ielts-interface-card {
+    padding: 20px 16px;
+  }
+
+  /* Report: stack band score above sectional scores */
+  .report-scores-summary {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 20px;
+  }
+
+  .sectional-scores-list {
+    width: 100%;
+  }
+
+  .sectional-score-item {
+    grid-template-columns: 90px 1fr 36px;
+    gap: 8px;
+  }
+
+  .report-detailed-stats {
+    gap: 10px;
+  }
+
+  .report-stat-pill {
+    padding: 12px;
+  }
+
+  .stat-pill-value {
+    font-size: 18px;
+  }
+
+  .examiner-thinking-card {
+    padding: 24px 16px;
+  }
+
+  .exam-question-text {
+    font-size: 17px;
+  }
+}
+
+/* ── Mobile (≤480px) ── */
+@media (max-width: 480px) {
+  .ai-tutor-title {
+    font-size: 20px;
+  }
+
+  .tutor-tab-btn {
+    font-size: 12px;
+    padding: 7px 10px;
+  }
+
+  /* Chat fills more of screen on mobile */
+  .chat-interface-card {
+    height: calc(100dvh - 200px);
+    min-height: 340px;
+  }
+
+  .chat-messages-container {
+    padding: 12px;
+  }
+
+  .chat-bubble-text {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  .suggestions-row {
+    padding: 8px 12px;
+    gap: 6px;
+  }
+
+  .suggestion-chip {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+
+  .chat-input-bar {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .chat-field-input {
+    padding: 10px 12px;
+    font-size: 16px;
+    /* prevent iOS zoom */
+  }
+
+  .chat-send-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+  }
+
+  .ielts-interface-card {
+    padding: 16px 12px;
+  }
+
+  .ielts-start-screen {
+    gap: 12px;
+  }
+
+  .ielts-banner-icon {
+    font-size: 48px;
+  }
+
+  .ielts-start-screen h2 {
+    font-size: 18px;
+  }
+
+  .ielts-start-screen p {
+    font-size: 13px;
+  }
+
+  .ielts-rubrics-info {
+    padding: 14px;
+  }
+
+  .ielts-start-btn {
+    padding: 12px 24px;
+    font-size: 14px;
+    width: 100%;
+  }
+
+  .exam-question-text {
+    font-size: 16px;
+  }
+
+  .exam-question-card {
+    padding: 16px;
+  }
+
+  .voice-wave-container {
+    height: 60px;
+  }
+
+  .bar-3 {
+    height: 60px;
+  }
+
+  .bar-2 {
+    height: 44px;
+  }
+
+  .bar-4 {
+    height: 36px;
+  }
+
+  .record-toggle-btn {
+    padding: 11px 20px;
+    font-size: 13px;
+  }
+
+  .transcript-box {
+    max-width: 100%;
+    padding: 12px;
+  }
+
+  .band-score-circle {
+    width: 110px;
+    height: 110px;
+  }
+
+  .band-value {
+    font-size: 36px;
+  }
+
+  .report-header h2 {
+    font-size: 18px;
+  }
+
+  .sectional-score-item {
+    grid-template-columns: 72px 1fr 32px;
+    gap: 6px;
+  }
+
+  .sectional-score-item span {
+    font-size: 12px;
+  }
+
+  .report-detailed-stats {
+    gap: 8px;
+  }
+
+  .report-stat-pill {
+    flex: 1 1 calc(50% - 4px);
+    padding: 10px 12px;
+  }
+
+  .stat-pill-value {
+    font-size: 16px;
+  }
+
+  .stat-pill-label {
+    font-size: 10px;
+  }
+
+  .review-card {
+    padding: 14px 12px;
+  }
+
+  .examiner-thinking-card {
+    padding: 20px 12px;
+    margin: 10px 0;
+  }
+
+  .examiner-thinking-card .thinking-icon {
+    font-size: 36px;
+  }
+
+  .examiner-thinking-card h3 {
+    font-size: 16px;
+  }
+
+  .report-loading-container {
+    padding: 40px 16px;
+  }
+
+  .report-loading-spinner {
+    width: 40px;
+    height: 40px;
+  }
+
+  .report-loading-container h3 {
+    font-size: 17px;
+  }
+
+  .word-learning-banner {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+}
+
+/* ── Very small phones (≤360px) ── */
+@media (max-width: 360px) {
+  .tutor-tab-btn {
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+
+  .chat-messages-container {
+    padding: 10px;
+  }
+
+  .chat-message-bubble {
+    max-width: 95%;
+  }
+
+  .ielts-interface-card {
+    padding: 12px 10px;
+  }
+
+  .sectional-score-item {
+    grid-template-columns: 60px 1fr 28px;
+  }
+
+  .report-stat-pill {
+    flex: 1 1 100%;
+  }
+}
+
+/* ── Landscape phones ── */
+@media (max-height: 500px) and (max-width: 768px) {
+  .chat-interface-card {
+    height: 280px;
+  }
+
+  .ielts-start-screen {
+    padding: 8px 0;
+    gap: 8px;
+  }
+
+  .ielts-banner-icon {
+    font-size: 32px;
+  }
+
+  .examiner-thinking-card {
+    padding: 16px;
+    margin: 8px 0;
+  }
+
+  .voice-recorder-area {
+    gap: 12px;
+    padding: 8px 0;
   }
 }
