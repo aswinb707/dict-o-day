@@ -418,3 +418,53 @@
     padding: 14px;
   }
 }
+
+/* Exam Booking Buttons */
+.journal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.booking-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 18px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.booking-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+}
+
+.booking-btn:active {
+  transform: translateY(0);
+}
+
+.booking-btn--ielts {
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  color: #fff;
+}
+
+.booking-btn--ielts:hover {
+  background: linear-gradient(135deg, #1e40af, #2563eb);
+}
+
+.booking-btn--toefl {
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #fff;
+}
+
+.booking-btn--toefl:hover {
+  background: linear-gradient(135deg, #047857, #059669);
+}
