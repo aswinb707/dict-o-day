@@ -348,6 +348,21 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
       .catch(err => console.error("Error postponing word:", err));
   };
 
+  const handleDeleteWord = (wordId) => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) return;
+
+    fetch(`${API_BASE_URL}/api/words/${wordId}/delete`, {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(() => {
+        loadDashboardData();
+      })
+      .catch(err => console.error("Error deleting word:", err));
+  };
+
   const handleSaveProfile = (formData) => {
     const token = localStorage.getItem("accessToken");
     if (!token) return;
@@ -390,6 +405,11 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
   };
 
   const handleWordCardSelect = (wordObj) => {
+    const isLimitExceeded = todayWords.length > userProfile.wordCount;
+    if (isLimitExceeded) {
+      alert("Daily vocabulary limit exceeded. Please postpone or delete words to fit your daily limit.");
+      return;
+    }
     const fullData =
       todayWords.find((v) => v.word.toLowerCase() === wordObj.word.toLowerCase()) ||
       learnedWords.find((v) => v.word.toLowerCase() === wordObj.word.toLowerCase()) ||
@@ -425,19 +445,29 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
             { id: "test", icon: "◎", label: "Test" },
             { id: "journal", icon: "◈", label: "Journal" },
             { id: "calendar", icon: "▦", label: "Calendar" },
-          ].map((item) => (
-            <button
-              key={item.id}
-              className={`nav-item${activeNav === item.id ? " active" : ""}`}
-              onClick={() => {
-                setActiveNav(item.id);
-                setSelectedWord(null);
-              }}
-            >
-              <span className="nav-icon">{item.icon}</span>
-              <span className="nav-label">{item.label}</span>
-            </button>
-          ))}
+          ].map((item) => {
+            const isLimitExceeded = todayWords.length > userProfile.wordCount;
+            const isLearnBlocked = item.id === "learn" && isLimitExceeded;
+            return (
+              <button
+                key={item.id}
+                className={`nav-item${activeNav === item.id ? " active" : ""}`}
+                onClick={() => {
+                  if (isLearnBlocked) {
+                    alert("Daily vocabulary limit exceeded. Please postpone or delete words to fit your daily limit.");
+                    return;
+                  }
+                  setActiveNav(item.id);
+                  setSelectedWord(null);
+                }}
+                style={isLearnBlocked ? { opacity: 0.5, cursor: "not-allowed" } : {}}
+                title={isLearnBlocked ? "Learn is disabled because daily limit is exceeded" : ""}
+              >
+                <span className="nav-icon">{item.icon}</span>
+                <span className="nav-label">{item.label}</span>
+              </button>
+            );
+          })}
         </nav>
         <div className="sidebar-bottom">
           <div
@@ -628,16 +658,28 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
                             <span className="pos-tag" style={w.fusedWord ? { background: "rgba(255,255,255,0.25)", color: "#ffffff" } : {}}>{w.pos}</span>
                             <div style={{ display: "flex", gap: "6px" }}>
                               {todayWords.length > userProfile.wordCount && (
-                                <button
-                                  className="postpone-card-btn"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handlePostponeWord(w.id);
-                                  }}
-                                  title="Postpone this word to tomorrow"
-                                >
-                                  ⏱ Postpone
-                                </button>
+                                <>
+                                  <button
+                                    className="postpone-card-btn"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handlePostponeWord(w.id);
+                                    }}
+                                    title="Postpone this word to tomorrow"
+                                  >
+                                    ⏱ Postpone
+                                  </button>
+                                  <button
+                                    className="delete-card-btn"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDeleteWord(w.id);
+                                    }}
+                                    title="Delete this word from your today's list"
+                                  >
+                                    🗑 Delete
+                                  </button>
+                                </>
                               )}
                               <button
                                 className="details-link-btn"
@@ -645,6 +687,8 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
                                   e.stopPropagation();
                                   handleWordCardSelect(w);
                                 }}
+                                disabled={todayWords.length > userProfile.wordCount}
+                                style={todayWords.length > userProfile.wordCount ? { opacity: 0.5, cursor: "not-allowed" } : {}}
                               >
                                 Details ➔
                               </button>

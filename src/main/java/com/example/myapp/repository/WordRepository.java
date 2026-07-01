@@ -20,7 +20,7 @@ public interface WordRepository extends JpaRepository<Word, UUID> {
         SELECT w.* FROM words w
         WHERE w.fused_word IS NULL AND w.id NOT IN (
             SELECT uwp.word_id FROM user_word_progress uwp
-            WHERE uwp.user_id = :userId AND (uwp.status = 'mastered' OR (uwp.postponed_until IS NOT NULL AND uwp.postponed_until > CURRENT_DATE))
+            WHERE uwp.user_id = :userId AND (uwp.status = 'mastered' OR uwp.status = 'deleted' OR (uwp.postponed_until IS NOT NULL AND uwp.postponed_until > CURRENT_DATE))
         )
         ORDER BY RANDOM()
         LIMIT :limit
@@ -32,7 +32,7 @@ public interface WordRepository extends JpaRepository<Word, UUID> {
         LEFT JOIN user_word_progress uwp ON w.id = uwp.word_id AND uwp.user_id = :userId
         WHERE w.fused_word IS NULL AND w.id NOT IN (
             SELECT p.word_id FROM user_word_progress p
-            WHERE p.user_id = :userId AND (p.status = 'mastered' OR (p.postponed_until IS NOT NULL AND p.postponed_until > CURRENT_DATE))
+            WHERE p.user_id = :userId AND (p.status = 'mastered' OR p.status = 'deleted' OR (p.postponed_until IS NOT NULL AND p.postponed_until > CURRENT_DATE))
         )
         ORDER BY 
             CASE WHEN uwp.mastery_score IS NOT NULL THEN 0 ELSE 1 END,

@@ -341,6 +341,33 @@ public class WordService {
         }
     }
 
+    @org.springframework.transaction.annotation.Transactional
+    public void deleteWord(UUID userId, UUID wordId) {
+        UserWordProgress progress = progressRepository.findByUserIdAndWordId(userId, wordId)
+                .orElseGet(() -> UserWordProgress.builder()
+                        .userId(userId)
+                        .wordId(wordId)
+                        .status("new")
+                        .timesSeen(1)
+                        .timesCorrect(0)
+                        .masteryScore(0.0)
+                        .build());
+        progress.setStatus("deleted");
+        progressRepository.save(progress);
+
+        try {
+            String cached = redisService.getCachedDailyWords(userId);
+            if (cached != null) {
+                List<UUID> ids = new java.util.ArrayList<>(objectMapper.readValue(cached, new TypeReference<List<UUID>>() {}));
+                if (ids.remove(wordId)) {
+                    redisService.cacheDailyWords(userId, objectMapper.writeValueAsString(ids));
+                }
+            }
+        } catch (Exception e) {
+            log.error("Failed to remove deleted word from Redis: {}", e.getMessage());
+        }
+    }
+
     private void forceWordIntoTodayWords(UUID userId, UUID wordId) {
         try {
             String cached = redisService.getCachedDailyWords(userId);

@@ -66,4 +66,11 @@ public class WordController {
         wordService.postponeWord(d.getUserId(), id);
         return ResponseEntity.ok(ApiResponse.ok(null));
     }
+
+    @PostMapping("/{id}/delete")
+    public ResponseEntity<ApiResponse<Void>> deleteWord(@PathVariable UUID id, Authentication auth) {
+        JwtUserDetails d = (JwtUserDetails) auth.getDetails();
+        wordService.deleteWord(d.getUserId(), id);
+        return ResponseEntity.ok(ApiResponse.ok(null));
+    }
 }

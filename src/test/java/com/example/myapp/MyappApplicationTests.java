@@ -176,4 +176,29 @@ class MyappApplicationTests {
         );
         org.junit.jupiter.api.Assertions.assertEquals("Date of birth is required.", ex.getMessage());
     }
+
+    @Autowired
+    private com.example.myapp.service.WordService wordService;
+
+    @Autowired
+    private com.example.myapp.repository.UserWordProgressRepository progressRepository;
+
+    @Test
+    void testDeleteWord() {
+        java.util.UUID userId = java.util.UUID.randomUUID();
+        java.util.UUID wordId = java.util.UUID.randomUUID();
+
+        org.junit.jupiter.api.Assertions.assertFalse(
+            progressRepository.findByUserIdAndWordId(userId, wordId).isPresent()
+        );
+
+        wordService.deleteWord(userId, wordId);
+
+        java.util.Optional<com.example.myapp.entity.UserWordProgress> progressOpt = 
+            progressRepository.findByUserIdAndWordId(userId, wordId);
+        org.junit.jupiter.api.Assertions.assertTrue(progressOpt.isPresent());
+        org.junit.jupiter.api.Assertions.assertEquals("deleted", progressOpt.get().getStatus());
+        
+        progressRepository.delete(progressOpt.get());
+    }
 }
