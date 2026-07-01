@@ -340,19 +340,18 @@ public class WordService {
             log.error("Failed to remove postponed word from Redis: {}", e.getMessage());
         }
     }
-
     @org.springframework.transaction.annotation.Transactional
     public void deleteWord(UUID userId, UUID wordId) {
         UserWordProgress progress = progressRepository.findByUserIdAndWordId(userId, wordId)
                 .orElseGet(() -> UserWordProgress.builder()
                         .userId(userId)
                         .wordId(wordId)
-                        .status("new")
                         .timesSeen(1)
                         .timesCorrect(0)
                         .masteryScore(0.0)
                         .build());
-        progress.setStatus("deleted");
+        progress.setStatus("deleted_today");
+        progress.setPostponedUntil(java.time.LocalDate.now().plusDays(1));
         progressRepository.save(progress);
 
         try {

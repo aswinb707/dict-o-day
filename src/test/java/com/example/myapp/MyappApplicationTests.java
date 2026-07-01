@@ -197,7 +197,7 @@ class MyappApplicationTests {
         java.util.Optional<com.example.myapp.entity.UserWordProgress> progressOpt = 
             progressRepository.findByUserIdAndWordId(userId, wordId);
         org.junit.jupiter.api.Assertions.assertTrue(progressOpt.isPresent());
-        org.junit.jupiter.api.Assertions.assertEquals("deleted", progressOpt.get().getStatus());
+        org.junit.jupiter.api.Assertions.assertEquals("deleted_today", progressOpt.get().getStatus());
         
         progressRepository.delete(progressOpt.get());
     }
