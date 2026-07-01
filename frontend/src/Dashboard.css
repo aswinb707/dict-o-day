@@ -162,6 +162,7 @@ body {
 .sidebar-bottom {
   padding: 16px 12px 0;
   border-top: 1px solid var(--border);
+  margin-top: auto; /* FIX: pin to bottom of sidebar column instead of relying solely on .sidebar-nav's flex:1, which was letting this block float/detach */
 }
 
 .user-pill {
@@ -926,6 +927,7 @@ body {
     top: 14px;
     right: 14px;
     z-index: 201;
+    margin-top: 0; /* FIX: undo the sidebar-column margin-top:auto now that this is a fixed-position element on mobile */
   }
 
   .sidebar-bottom .user-pill {
@@ -977,6 +979,12 @@ body {
     padding: 16px 12px 90px;
     /* bottom padding so content isn't behind nav */
     gap: 16px;
+  }
+
+  /* FIX: push topbar down below the fixed avatar circle so the streak badge
+     can never sit underneath it, regardless of badge width/wrapping */
+  .topbar {
+    margin-top: 46px;
   }
 
   .page-title {
@@ -1167,40 +1175,5 @@ body {
 
   .action-btn {
     transition: none;
-  }
-}
-
-/* ── Mobile (≤480px) ── */
-@media (max-width: 480px) {
-  ...
-
-  .sidebar-bottom {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    border-top: none;
-    position: fixed;
-    top: 14px;
-    right: 14px;
-    z-index: 201;
-  }
-
-  .sidebar-bottom .user-pill {
-    padding: 4px;
-    background: var(--surface);
-    box-shadow: var(--shadow);
-    border-radius: 50%;
-  }
-
-  .sidebar-bottom .user-info {
-    display: none;
-  }
-
-  ...
-
-  /* FIX: reserve space so the fixed avatar circle doesn't sit on top of the streak badge */
-  .topbar {
-    padding-right: 46px;
   }
 }
