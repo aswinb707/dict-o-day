@@ -35,19 +35,29 @@ const generateQuizForWord = (word, pool) => {
   const wordToTest = isFused ? word.fusedWord : word.word;
   const correctDefinition = isFused ? word.fusedDefinition : word.definition;
 
+  const defaultDefinitions = [
+    "Present, appearing, or found everywhere.",
+    "Lasting for a very short time.",
+    "Dealing with things sensibly and realistically in a way that is based on practical considerations.",
+    "Able to withstand or recover quickly from difficult conditions.",
+    "Tending to keep a firm hold of something; clinging or adhering closely.",
+    "Fluent or persuasive in speaking or writing.",
+    "Showing great attention to detail; very careful and precise."
+  ];
+
+  const defaultSynonyms = ["widespread", "fleeting", "practical", "strong", "persistent", "articulate", "precise"];
+  const defaultAntonyms = ["rare", "permanent", "unrealistic", "weak", "yielding", "inarticulate", "careless"];
+  const defaultFallbackWords = ["ubiquitous", "ephemeral", "pragmatic", "resilient", "tenacious", "eloquent", "meticulous"];
+
+  // Q1: Definition matching (either "What is definition of X" or "Which word is defined as Y")
+  const askWordForDefinition = Math.random() < 0.5;
+  let q1;
+
   // Get other definitions from pool
   const otherDefs = pool
     .filter(w => w.id !== word.id)
     .map(w => w.fusedWord ? w.fusedDefinition : w.definition)
     .filter(Boolean);
-
-  const defaultDistractors = [
-    "To make something clear or easy to understand by describing it.",
-    "A state of sudden, strong feeling of excitement and happiness.",
-    "Showing a lack of proper respect or politeness.",
-    "To refuse to accept or acknowledge something.",
-    "Very alert and quick to notice and deal with danger or problems."
-  ];
 
   const distractorsQ1 = [];
   for (let def of otherDefs) {
@@ -56,96 +66,172 @@ const generateQuizForWord = (word, pool) => {
     }
   }
   let i = 0;
-  while (distractorsQ1.length < 2 && i < defaultDistractors.length) {
-    const fallback = defaultDistractors[i];
+  while (distractorsQ1.length < 2 && i < defaultDefinitions.length) {
+    const fallback = defaultDefinitions[i];
     if (fallback !== correctDefinition && !distractorsQ1.includes(fallback)) {
       distractorsQ1.push(fallback);
     }
     i++;
   }
 
-  const optionsQ1 = [correctDefinition, distractorsQ1[0] || defaultDistractors[0], distractorsQ1[1] || defaultDistractors[1]].sort(() => Math.random() - 0.5);
-  const q1 = {
-    questionText: `What is the correct definition of "${wordToTest}"?`,
-    options: optionsQ1,
-    correctIndex: optionsQ1.indexOf(correctDefinition)
-  };
+  if (askWordForDefinition) {
+    const optionsQ1 = [correctDefinition, distractorsQ1[0] || defaultDefinitions[0], distractorsQ1[1] || defaultDefinitions[1]].sort(() => Math.random() - 0.5);
+    q1 = {
+      questionText: `What is the correct definition of the word "${wordToTest}"?`,
+      options: optionsQ1,
+      correctIndex: optionsQ1.indexOf(correctDefinition)
+    };
+  } else {
+    // Distractors are other words
+    const otherWords = pool
+      .filter(w => w.id !== word.id)
+      .map(w => w.fusedWord ? w.fusedWord : w.word)
+      .filter(Boolean);
+    const distractorsWords = [];
+    for (let w of otherWords) {
+      if (w && w.toLowerCase() !== wordToTest.toLowerCase() && !distractorsWords.includes(w)) {
+        distractorsWords.push(w);
+      }
+    }
+    let idx = 0;
+    while (distractorsWords.length < 2 && idx < defaultFallbackWords.length) {
+      const fallback = defaultFallbackWords[idx];
+      if (fallback.toLowerCase() !== wordToTest.toLowerCase() && !distractorsWords.includes(fallback)) {
+        distractorsWords.push(fallback);
+      }
+      idx++;
+    }
+    const optionsQ1 = [wordToTest, distractorsWords[0] || defaultFallbackWords[0], distractorsWords[1] || defaultFallbackWords[1]].sort(() => Math.random() - 0.5);
+    q1 = {
+      questionText: `Which word matches the definition: "${correctDefinition}"?`,
+      options: optionsQ1,
+      correctIndex: optionsQ1.indexOf(wordToTest)
+    };
+  }
 
-  // Question 2: Synonym or Part of Speech
-  const hasSynonyms = word.synonyms && word.synonyms !== "N/A" && word.synonyms.trim().length > 0;
+  // Q2: Synonym or Antonym matching
   let q2;
-  if (hasSynonyms) {
+  const hasSynonyms = word.synonyms && word.synonyms !== "N/A" && word.synonyms.trim().length > 0;
+  const hasAntonyms = word.antonyms && word.antonyms !== "N/A" && word.antonyms.trim().length > 0;
+
+  // Decide randomly between synonym, antonym, or part of speech
+  const q2Type = (hasSynonyms && hasAntonyms) 
+    ? (Math.random() < 0.5 ? "synonym" : "antonym")
+    : hasSynonyms ? "synonym" : hasAntonyms ? "antonym" : "pos";
+
+  if (q2Type === "synonym") {
     const synonymsList = word.synonyms.split(",").map(s => s.trim());
-    const correctSynonym = synonymsList[0];
+    const correctSynonym = synonymsList[Math.floor(Math.random() * synonymsList.length)];
 
     const otherSyns = pool
       .filter(w => w.id !== word.id)
       .map(w => w.synonyms)
       .filter(s => s && s !== "N/A")
-      .map(s => s.split(",")[0].trim());
+      .flatMap(s => s.split(",").map(item => item.trim()));
 
-    const defaultSyns = ["happy", "careful", "brave", "rapid", "stubborn", "clear"];
     const distractorsQ2 = [];
     for (let s of otherSyns) {
-      if (s && s !== correctSynonym && !distractorsQ2.includes(s)) {
+      if (s && s.toLowerCase() !== correctSynonym.toLowerCase() && s.toLowerCase() !== wordToTest.toLowerCase() && !distractorsQ2.includes(s)) {
         distractorsQ2.push(s);
       }
     }
     let j = 0;
-    while (distractorsQ2.length < 2 && j < defaultSyns.length) {
-      const fallback = defaultSyns[j];
-      if (fallback !== correctSynonym && !distractorsQ2.includes(fallback)) {
+    while (distractorsQ2.length < 2 && j < defaultSynonyms.length) {
+      const fallback = defaultSynonyms[j];
+      if (fallback.toLowerCase() !== correctSynonym.toLowerCase() && fallback.toLowerCase() !== wordToTest.toLowerCase() && !distractorsQ2.includes(fallback)) {
         distractorsQ2.push(fallback);
       }
       j++;
     }
 
-    const optionsQ2 = [correctSynonym, distractorsQ2[0] || defaultSyns[0], distractorsQ2[1] || defaultSyns[1]].sort(() => Math.random() - 0.5);
+    const optionsQ2 = [correctSynonym, distractorsQ2[0] || defaultSynonyms[0], distractorsQ2[1] || defaultSynonyms[1]].sort(() => Math.random() - 0.5);
     q2 = {
-      questionText: `Which of the following is a synonym of "${word.word}"?`,
+      questionText: `Which of the following is a synonym of "${wordToTest}"?`,
       options: optionsQ2,
       correctIndex: optionsQ2.indexOf(correctSynonym)
     };
+  } else if (q2Type === "antonym") {
+    const antonymsList = word.antonyms.split(",").map(s => s.trim());
+    const correctAntonym = antonymsList[Math.floor(Math.random() * antonymsList.length)];
+
+    const otherAnts = pool
+      .filter(w => w.id !== word.id)
+      .map(w => w.antonyms)
+      .filter(s => s && s !== "N/A")
+      .flatMap(s => s.split(",").map(item => item.trim()));
+
+    const distractorsQ2 = [];
+    for (let a of otherAnts) {
+      if (a && a.toLowerCase() !== correctAntonym.toLowerCase() && a.toLowerCase() !== wordToTest.toLowerCase() && !distractorsQ2.includes(a)) {
+        distractorsQ2.push(a);
+      }
+    }
+    let j = 0;
+    while (distractorsQ2.length < 2 && j < defaultAntonyms.length) {
+      const fallback = defaultAntonyms[j];
+      if (fallback.toLowerCase() !== correctAntonym.toLowerCase() && fallback.toLowerCase() !== wordToTest.toLowerCase() && !distractorsQ2.includes(fallback)) {
+        distractorsQ2.push(fallback);
+      }
+      j++;
+    }
+
+    const optionsQ2 = [correctAntonym, distractorsQ2[0] || defaultAntonyms[0], distractorsQ2[1] || defaultAntonyms[1]].sort(() => Math.random() - 0.5);
+    q2 = {
+      questionText: `Which of the following is an antonym of "${wordToTest}"?`,
+      options: optionsQ2,
+      correctIndex: optionsQ2.indexOf(correctAntonym)
+    };
   } else {
-    const correctPOS = word.pos.toLowerCase();
+    // Part of speech
+    const correctPOS = (isFused ? "adjective" : word.pos || "adjective").toLowerCase();
     const allPOS = ["noun", "verb", "adjective", "adverb"];
     const distractorsQ2 = allPOS.filter(p => p !== correctPOS);
-    const optionsQ2 = [correctPOS, distractorsQ2[0], distractorsQ2[1]].sort(() => Math.random() - 0.5);
+    const optionsQ2 = [correctPOS, distractorsQ2[0] || distractorsQ2[0], distractorsQ2[1] || distractorsQ2[1]].sort(() => Math.random() - 0.5);
     q2 = {
-      questionText: `What is the part of speech of "${word.word}"?`,
+      questionText: `What is the part of speech of "${wordToTest}"?`,
       options: optionsQ2,
       correctIndex: optionsQ2.indexOf(correctPOS)
     };
   }
 
-  // Question 3: Pronunciation / phonetic spelling
-  const correctPron = `/${isFused ? word.fusedPronunciation || word.pronunciation : word.pronunciation}/`;
-  const otherProns = pool
-    .filter(w => w.id !== word.id)
-    .map(w => `/${w.fusedPronunciation || w.pronunciation}/`)
-    .filter(p => p !== correctPron);
+  // Q3: Fill in the blank (Sentence Context)
+  let sentence = isFused ? word.fusedSentence : (word.inASentence || (word.sentences && word.sentences[0]));
+  if (!sentence) {
+    sentence = `It is important to understand the meaning of ${wordToTest}.`;
+  }
 
-  const defaultProns = ["/æpl/", "/kɑːr/", "/hæpi/", "/wɔːtər/", "/rɪˈzɪliənt/"];
+  // Replace wordToTest in sentence with blank (case-insensitive replace)
+  const regex = new RegExp(`\\b${wordToTest}\\b`, 'i');
+  let blankSentence = sentence.replace(regex, "_______");
+  if (blankSentence === sentence) {
+    blankSentence = sentence.replace(new RegExp(wordToTest, 'i'), "_______");
+  }
+
+  // Distractors are other words from the pool/defaults
+  const otherWordsForBlank = pool
+    .filter(w => w.id !== word.id)
+    .map(w => w.fusedWord ? w.fusedWord : w.word)
+    .filter(Boolean);
   const distractorsQ3 = [];
-  for (let p of otherProns) {
-    if (p && p !== correctPron && !distractorsQ3.includes(p)) {
-      distractorsQ3.push(p);
+  for (let w of otherWordsForBlank) {
+    if (w && w.toLowerCase() !== wordToTest.toLowerCase() && !distractorsQ3.includes(w)) {
+      distractorsQ3.push(w);
     }
   }
-  let k = 0;
-  while (distractorsQ3.length < 2 && k < defaultProns.length) {
-    const fallback = defaultProns[k];
-    if (fallback !== correctPron && !distractorsQ3.includes(fallback)) {
+  let idx = 0;
+  while (distractorsQ3.length < 2 && idx < defaultFallbackWords.length) {
+    const fallback = defaultFallbackWords[idx];
+    if (fallback.toLowerCase() !== wordToTest.toLowerCase() && !distractorsQ3.includes(fallback)) {
       distractorsQ3.push(fallback);
     }
-    k++;
+    idx++;
   }
 
-  const optionsQ3 = [correctPron, distractorsQ3[0] || defaultProns[0], distractorsQ3[1] || defaultProns[1]].sort(() => Math.random() - 0.5);
+  const optionsQ3 = [wordToTest, distractorsQ3[0] || defaultFallbackWords[0], distractorsQ3[1] || defaultFallbackWords[1]].sort(() => Math.random() - 0.5);
   const q3 = {
-    questionText: `What is the correct pronunciation / phonetic spelling of "${wordToTest}"?`,
+    questionText: `Complete the sentence: "${blankSentence}"`,
     options: optionsQ3,
-    correctIndex: optionsQ3.indexOf(correctPron)
+    correctIndex: optionsQ3.indexOf(wordToTest)
   };
 
   return [q1, q2, q3];

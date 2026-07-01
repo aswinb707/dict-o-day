@@ -23,7 +23,14 @@ export default function ExplorePage({ onAddWordSuccess, onBack }) {
     fetch(`${API_BASE_URL}/api/words/preview?word=${encodeURIComponent(wordToSearch.trim())}`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
-      .then(res => res.json())
+      .then(res => {
+        return res.json().then(data => {
+          if (!res.ok || !data.success) {
+            throw new Error(data.error || data.message || "Failed to fetch details for this word.");
+          }
+          return data;
+        });
+      })
       .then(data => {
         setSearching(false);
         if (data.data) {
@@ -35,7 +42,7 @@ export default function ExplorePage({ onAddWordSuccess, onBack }) {
       .catch(err => {
         setSearching(false);
         console.error(err);
-        setError("An error occurred while generating details. Please try again.");
+        setError(err.message || "An error occurred while generating details. Please try again.");
       });
   };
 

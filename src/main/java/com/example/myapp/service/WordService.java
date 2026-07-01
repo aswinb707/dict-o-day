@@ -31,6 +31,10 @@ public class WordService {
     private AiService aiService;
 
     public Word createCustomWord(UUID userId, Word customWord) {
+        String wordName = customWord.getWord();
+        if (wordName == null || !wordName.trim().matches("^[a-zA-Z\\s\\-’']+$")) {
+            throw new IllegalArgumentException("Only English words are allowed.");
+        }
         Word word = wordRepository.findByWordIgnoreCase(customWord.getWord().trim())
                 .orElseGet(() -> wordRepository.save(customWord));
         markWordSeen(userId, word.getId());
@@ -39,6 +43,9 @@ public class WordService {
     }
 
     public Word addRecommendedWord(UUID userId, String wordName) {
+        if (wordName == null || !wordName.trim().matches("^[a-zA-Z\\s\\-’']+$")) {
+            throw new IllegalArgumentException("Only English words are allowed.");
+        }
         String cleanWord = wordName.trim();
         Word word = wordRepository.findByWordIgnoreCase(cleanWord)
                 .orElseGet(() -> {
@@ -57,9 +64,12 @@ public class WordService {
                 jsonStr = jsonStr.replaceAll("```json", "").replaceAll("```", "").trim();
             }
             com.fasterxml.jackson.databind.JsonNode root = objectMapper.readTree(jsonStr);
+            String def = root.path("definition").asText("Definition not found.");
+            if ("ERROR: NOT AN ENGLISH WORD".equalsIgnoreCase(def) || def.contains("NOT AN ENGLISH WORD")) {
+                throw new IllegalArgumentException("The word '" + wordName + "' does not exist or is not a valid English word.");
+            }
             String word = root.path("word").asText(wordName);
             String pos = root.path("partOfSpeech").asText("adjective");
-            String def = root.path("definition").asText("Definition not found.");
             String pron = root.path("pronunciation").asText("Pronunciation not found.");
             String inASentence = root.path("inASentence").asText("");
             List<String> examples = new java.util.ArrayList<>();
@@ -100,6 +110,8 @@ public class WordService {
                 .fusedSentence(fusedSentence)
                 .tags(tags)
                 .build();
+        } catch (IllegalArgumentException e) {
+            throw e;
         } catch (Exception e) {
             log.error("Failed to generate word details for: {}, error: {}", wordName, e.getMessage());
             return Word.builder()
@@ -400,6 +412,9 @@ public class WordService {
     }
 
     public Word previewWord(String wordName) {
+        if (wordName == null || !wordName.trim().matches("^[a-zA-Z\\s\\-’']+$")) {
+            throw new IllegalArgumentException("Only English words are allowed.");
+        }
         return wordRepository.findByWordIgnoreCase(wordName.trim())
                 .orElseGet(() -> generateWordDetails(wordName.trim()));
     }

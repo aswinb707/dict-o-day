@@ -165,7 +165,8 @@ public class AiService {
         List<Map<String, String>> messages = List.of(
             Map.of("role", "system", "content",
                 "You are an expert IELTS vocabulary coach. Generate dictionary details for the word: \"" + wordName + "\".\n" +
-                "Determine if the word is an advanced IELTS/interview-level vocabulary word (e.g. ubiquitous, ephemeral, resilient, pragmatic, etc.).\n" +
+                "CRITICAL: First check if the requested word is a valid, recognized English word. If the word is from another language (e.g. French like 'maison', German, Japanese, Spanish, etc.) or is not a real English word (e.g., gibberish, random letters like 'asdasd', 'xyzxyz'), you MUST set the \"definition\" key to \"ERROR: NOT AN ENGLISH WORD\" and set all other keys to null or empty.\n\n" +
+                "If it IS a valid English word, determine if the word is an advanced IELTS/interview-level vocabulary word (e.g. ubiquitous, ephemeral, resilient, pragmatic, etc.).\n" +
                 "If it IS an advanced IELTS-level word:\n" +
                 "- Set \"isIeltsLevel\" to true.\n" +
                 "- Set \"fusedWord\", \"fusedDefinition\", \"fusedPronunciation\", and \"fusedSentence\" to null.\n" +
@@ -191,23 +192,30 @@ public class AiService {
             Map.of("role", "user", "content", "Word: " + wordName)
         );
         return callGroqApi(messages);
-    }    private String buildSystemPrompt(UUID wordId) {
+    }
+
+    private String buildSystemPrompt(UUID wordId) {
         StringBuilder sb = new StringBuilder();
         sb.append("You are Dict-o-Day AI Tutor, an expert English language teacher. ");
         sb.append("Help users learn vocabulary, grammar, and pronunciation for competitive exams and interviews.\n\n");
         
         sb.append("CRITICAL GUARDRAILS:\n");
-        sb.append("1. INAPPROPRIATE CONTENT: If the user query is inappropriate, offensive, vulgar, profane, or harmful, you must refuse to answer. ");
+        sb.append("1. ENGLISH ONLY: You must communicate and answer ONLY in English. Do not teach or translate to/from any other languages (like Japanese, French, German, Spanish, etc.). If the user asks you to translate or converse in another language, refuse politely and keep the focus on English learning.\n");
+        sb.append("2. INAPPROPRIATE CONTENT: If the user query is inappropriate, offensive, vulgar, profane, or harmful, you must refuse to answer. ");
         sb.append("Simply state: \"I'm sorry, but I cannot answer inappropriate or offensive queries. Let's keep our session focused on learning English.\"\n");
-        sb.append("2. CODING REQUESTS: Never generate programming code or software scripts. If asked for code, refuse politely: \"I am an English vocabulary and grammar tutor. I cannot write code, but I can help you define programming-related terms!\"\n");
+        sb.append("3. CODING REQUESTS: Never generate programming code or software scripts. If asked for code, refuse politely: \"I am an English vocabulary and grammar tutor. I cannot write code, but I can help you define programming-related terms!\"\n");
 
         if (wordId != null) {
             try {
                 Word word = wordService.getWordById(wordId);
-                sb.append("3. ACTIVE WORD CONTEXT FOCUS:\n");
+                sb.append("4. ACTIVE WORD CONTEXT FOCUS:\n");
                 sb.append("You are in a strict focus learning session for the word: \"").append(word.getWord()).append("\".\n");
                 sb.append("Your response MUST relate strictly to this word.\n");
-                sb.append("- Short & Sweet: By default, keep your answers short and sweet (1-3 sentences max) to avoid boring the user. For example, if asked to put the word in a sentence, give a single sentence using the focus word and explain how it is used.\n");
+                sb.append("- Explanation Format: By default, when explaining the focus word, keep it highly effective, crisp, and structured. Present it as follows:\n");
+                sb.append("  1. A clear, crisp definition (1-2 lines).\n");
+                sb.append("  2. Key synonyms and antonyms of the word (labeled clearly).\n");
+                sb.append("  3. A clear, natural example sentence showing how it is used.\n");
+                sb.append("Avoid long paragraphs. Keep explanations crisp and concise to keep the user engaged.\n");
                 sb.append("- Enlarged Answers: Only provide a detailed, larger, or enlarged explanation if the user explicitly asks for an enlarged or detailed explanation.\n");
                 sb.append("- Unrelated Queries & Connections: If the user inputs an unrelated word or concept (e.g. 'apple' when the focus word is 'resilient'), do not change the topic or explain the unrelated word. Instead, check if you can make a connection or write a sentence using BOTH the unrelated word and the focus word to answer. If a connection/sentence is possible, do so, but keep the focus on the focus word. If absolutely no connection can be made, or it is completely unrelated, you must respond exactly: 'The query/word is not related to the focus word \"").append(word.getWord()).append("\".'\n\n");
                 
