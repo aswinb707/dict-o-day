@@ -68,7 +68,10 @@ export default function JournalPage({ learnedWords, onWordSelect, onAddCustomWor
   };
 
   return (
-    <div className="journal-header-actions">
+    
+    <div className="journal-container animate-fade-in">
+      <header className="journal-header">
+        <div className="journal-header-actions">
           <a
             href="https://ielts.org/test-centres"
             target="_blank"
@@ -89,8 +92,6 @@ export default function JournalPage({ learnedWords, onWordSelect, onAddCustomWor
             {showAddForm ? "Close Form" : "+ Add Custom Word"}
           </button>
         </div>
-    <div className="journal-container animate-fade-in">
-      <header className="journal-header">
         <div>
           <h1 className="journal-title">My Learning Journal</h1>
           <p className="journal-sub">Alphabetical catalog of all learned words</p>
