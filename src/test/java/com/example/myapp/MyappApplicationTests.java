@@ -138,7 +138,19 @@ class MyappApplicationTests {
             IllegalArgumentException.class,
             () -> authService.register(reqUnderage)
         );
-        org.junit.jupiter.api.Assertions.assertEquals("You must be at least 10 years old.", ex.getMessage());
+        org.junit.jupiter.api.Assertions.assertEquals("Age must be between 10 and 116 years.", ex.getMessage());
+
+        com.example.myapp.dto.RegisterRequest reqOverage = new com.example.myapp.dto.RegisterRequest();
+        reqOverage.setUsername("overage_test");
+        reqOverage.setEmail("overage@test.com");
+        reqOverage.setPassword("password123");
+        reqOverage.setDob(java.time.LocalDate.now().minusYears(120));
+
+        ex = org.junit.jupiter.api.Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> authService.register(reqOverage)
+        );
+        org.junit.jupiter.api.Assertions.assertEquals("Age must be between 10 and 116 years.", ex.getMessage());
 
         com.example.myapp.dto.RegisterRequest reqFuture = new com.example.myapp.dto.RegisterRequest();
         reqFuture.setUsername("future_test");

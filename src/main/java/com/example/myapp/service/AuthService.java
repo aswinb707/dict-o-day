@@ -33,8 +33,9 @@ public class AuthService {
         if (request.getDob().isAfter(java.time.LocalDate.now())) {
             throw new IllegalArgumentException("Date of birth cannot be in the future.");
         }
-        if (java.time.Period.between(request.getDob(), java.time.LocalDate.now()).getYears() < 10) {
-            throw new IllegalArgumentException("You must be at least 10 years old.");
+        int age = java.time.Period.between(request.getDob(), java.time.LocalDate.now()).getYears();
+        if (age < 10 || age > 116) {
+            throw new IllegalArgumentException("Age must be between 10 and 116 years.");
         }
 
         // Default word count to 5 if not set, max 15

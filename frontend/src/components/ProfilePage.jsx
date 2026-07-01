@@ -71,8 +71,7 @@ export default function ProfilePage({ userProfile, onSave, onLogout }) {
               type="date"
               className="p-input"
               value={formData.dob}
-              onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
-              required
+              disabled
             />
           </div>
 

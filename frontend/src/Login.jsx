@@ -74,6 +74,14 @@ export default function Login({ onLogin, onRegister }) {
     return `${year}-${month}-${day}`;
   };
 
+  const getMinDobDate = () => {
+    const today = new Date();
+    const year = today.getFullYear() - 116;
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const setLogin = (key, value) =>
     setLoginForm((prev) => ({ ...prev, [key]: value }));
 
@@ -96,8 +104,8 @@ export default function Login({ onLogin, onRegister }) {
       }
       if (birthDate > today) {
         e.dob = "Date of birth cannot be in the future";
-      } else if (age < 10) {
-        e.dob = "You must be at least 10 years old";
+      } else if (age < 10 || age > 116) {
+        e.dob = "Age must be between 10 and 116 years";
       }
     }
     if (!registerForm.password || registerForm.password.length < 6) e.password = "Password must be at least 6 characters";
@@ -335,6 +343,7 @@ export default function Login({ onLogin, onRegister }) {
                     value={registerForm.dob}
                     onChange={(v) => setReg("dob", v)}
                     error={errors.dob}
+                    min={getMinDobDate()}
                     max={getMaxDobDate()}
                   />
 
