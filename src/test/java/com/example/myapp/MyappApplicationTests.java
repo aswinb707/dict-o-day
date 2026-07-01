@@ -122,4 +122,46 @@ class MyappApplicationTests {
         }
         System.out.println("Cleanup verification passed! No French or German remnants found in the database.");
     }
+
+    @Autowired
+    private com.example.myapp.service.AuthService authService;
+
+    @Test
+    void testAgeValidation() {
+        com.example.myapp.dto.RegisterRequest reqUnderage = new com.example.myapp.dto.RegisterRequest();
+        reqUnderage.setUsername("underage_test");
+        reqUnderage.setEmail("underage@test.com");
+        reqUnderage.setPassword("password123");
+        reqUnderage.setDob(java.time.LocalDate.now().minusYears(5));
+
+        IllegalArgumentException ex = org.junit.jupiter.api.Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> authService.register(reqUnderage)
+        );
+        org.junit.jupiter.api.Assertions.assertEquals("You must be at least 10 years old.", ex.getMessage());
+
+        com.example.myapp.dto.RegisterRequest reqFuture = new com.example.myapp.dto.RegisterRequest();
+        reqFuture.setUsername("future_test");
+        reqFuture.setEmail("future@test.com");
+        reqFuture.setPassword("password123");
+        reqFuture.setDob(java.time.LocalDate.now().plusYears(1));
+
+        ex = org.junit.jupiter.api.Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> authService.register(reqFuture)
+        );
+        org.junit.jupiter.api.Assertions.assertEquals("Date of birth cannot be in the future.", ex.getMessage());
+
+        com.example.myapp.dto.RegisterRequest reqNull = new com.example.myapp.dto.RegisterRequest();
+        reqNull.setUsername("null_test");
+        reqNull.setEmail("null@test.com");
+        reqNull.setPassword("password123");
+        reqNull.setDob(null);
+
+        ex = org.junit.jupiter.api.Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> authService.register(reqNull)
+        );
+        org.junit.jupiter.api.Assertions.assertEquals("Date of birth is required.", ex.getMessage());
+    }
 }

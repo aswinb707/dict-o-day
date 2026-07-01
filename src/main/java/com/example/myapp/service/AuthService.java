@@ -27,6 +27,15 @@ public class AuthService {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Username already taken.");
         }
+        if (request.getDob() == null) {
+            throw new IllegalArgumentException("Date of birth is required.");
+        }
+        if (request.getDob().isAfter(java.time.LocalDate.now())) {
+            throw new IllegalArgumentException("Date of birth cannot be in the future.");
+        }
+        if (java.time.Period.between(request.getDob(), java.time.LocalDate.now()).getYears() < 10) {
+            throw new IllegalArgumentException("You must be at least 10 years old.");
+        }
 
         // Default word count to 5 if not set, max 15
         int wordCount = request.getWordCount() != null ? Math.min(request.getWordCount(), 15) : 5;

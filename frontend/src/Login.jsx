@@ -66,6 +66,14 @@ export default function Login({ onLogin, onRegister }) {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+  const getMaxDobDate = () => {
+    const today = new Date();
+    const year = today.getFullYear() - 10;
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const setLogin = (key, value) =>
     setLoginForm((prev) => ({ ...prev, [key]: value }));
 
@@ -76,7 +84,22 @@ export default function Login({ onLogin, onRegister }) {
     const e = {};
     if (!registerForm.username.trim()) e.username = "Username is required";
     if (!registerForm.email.includes("@")) e.email = "Enter a valid email";
-    if (!registerForm.dob) e.dob = "Date of birth is required";
+    if (!registerForm.dob) {
+      e.dob = "Date of birth is required";
+    } else {
+      const birthDate = new Date(registerForm.dob);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      if (birthDate > today) {
+        e.dob = "Date of birth cannot be in the future";
+      } else if (age < 10) {
+        e.dob = "You must be at least 10 years old";
+      }
+    }
     if (!registerForm.password || registerForm.password.length < 6) e.password = "Password must be at least 6 characters";
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -312,6 +335,7 @@ export default function Login({ onLogin, onRegister }) {
                     value={registerForm.dob}
                     onChange={(v) => setReg("dob", v)}
                     error={errors.dob}
+                    max={getMaxDobDate()}
                   />
 
                   <Field

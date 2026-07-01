@@ -9,6 +9,7 @@ export default function Field({
   error,
   placeholder,
   right,
+  ...props
 }) {
   return (
     <div className="field">
@@ -25,6 +26,7 @@ export default function Field({
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           autoComplete="off"
+          {...props}
         />
 
         {right}
