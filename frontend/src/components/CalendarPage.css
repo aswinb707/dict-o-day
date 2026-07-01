@@ -1,8 +1,11 @@
+/* ── Dict-o-Day Calendar ── */
+
 .calendar-container {
   display: flex;
   flex-direction: column;
   gap: 24px;
   width: 100%;
+  min-width: 0;
 }
 
 .calendar-title {
@@ -17,12 +20,15 @@
   margin-top: 4px;
 }
 
+/* ── Two-column layout ── */
 .calendar-layout {
   display: grid;
   grid-template-columns: 1fr 340px;
   gap: 20px;
+  min-width: 0;
 }
 
+/* ── Calendar card ── */
 .calendar-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -32,23 +38,28 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-width: 0;
 }
 
 .calendar-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .month-year-label {
   font-size: 18px;
   font-weight: 700;
   color: var(--text-1);
+  white-space: nowrap;
 }
 
 .calendar-nav-buttons {
   display: flex;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .cal-nav-btn {
@@ -61,6 +72,8 @@
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .cal-nav-btn:hover {
@@ -68,6 +81,7 @@
   color: var(--text-1);
 }
 
+/* Day-of-week header */
 .calendar-grid-header {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -80,6 +94,7 @@
   padding-bottom: 10px;
 }
 
+/* Day cells grid */
 .calendar-grid-cells {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -97,6 +112,9 @@
   cursor: pointer;
   border: 2px solid transparent;
   transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  min-width: 0;
 }
 
 .calendar-cell.empty {
@@ -113,6 +131,7 @@
   font-size: 14px;
   font-weight: 600;
   color: var(--text-1);
+  line-height: 1;
 }
 
 .calendar-cell.streak-active {
@@ -130,6 +149,7 @@
   top: 4px;
   right: 4px;
   font-size: 11px;
+  line-height: 1;
 }
 
 .calendar-cell.today-cell {
@@ -146,22 +166,26 @@
   background: var(--amber-light);
 }
 
-/* Streak side panels */
+/* ── Right panel ── */
 .streak-summary-panel {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-width: 0;
 }
 
-.streak-stats-card, .day-detail-card {
+.streak-stats-card,
+.day-detail-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 22px;
   box-shadow: var(--shadow-card);
+  min-width: 0;
 }
 
-.streak-stats-card h3, .day-detail-card h3 {
+.streak-stats-card h3,
+.day-detail-card h3 {
   font-size: 15px;
   font-weight: 700;
   color: var(--text-1);
@@ -186,6 +210,7 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
+  min-width: 0;
 }
 
 .streak-stat .stat-num {
@@ -198,6 +223,7 @@
   font-size: 11px;
   color: var(--text-3);
   font-weight: 600;
+  text-align: center;
 }
 
 .streak-meta-msg {
@@ -206,6 +232,7 @@
   line-height: 1.5;
 }
 
+/* Day detail */
 .day-words-list {
   display: flex;
   flex-direction: column;
@@ -226,12 +253,18 @@
   border: 1px solid var(--border);
   padding: 8px 12px;
   border-radius: var(--radius-sm);
+  gap: 8px;
+  min-width: 0;
 }
 
 .dw-name {
   font-size: 14px;
   font-weight: 700;
   color: var(--text-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .dw-pos {
@@ -241,6 +274,8 @@
   background: var(--amber-light);
   padding: 1px 6px;
   border-radius: 999px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .no-day-activity {
@@ -270,8 +305,229 @@
   line-height: 1.5;
 }
 
+/* ══════════════════════════
+   RESPONSIVE
+══════════════════════════ */
+
+/* ── Medium screens (≤1100px) ── */
+@media (max-width: 1100px) {
+  .calendar-layout {
+    grid-template-columns: 1fr 280px;
+    gap: 14px;
+  }
+
+  .calendar-card {
+    padding: 18px;
+  }
+
+  .streak-stats-card,
+  .day-detail-card {
+    padding: 16px;
+  }
+}
+
+/* ── Tablets (≤1024px): stack layout ── */
 @media (max-width: 1024px) {
   .calendar-layout {
     grid-template-columns: 1fr;
+  }
+
+  /* Side panel becomes horizontal 2-col row */
+  .streak-summary-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .calendar-title {
+    font-size: 22px;
+  }
+}
+
+/* ── Small tablets (≤768px) ── */
+@media (max-width: 768px) {
+  .calendar-title {
+    font-size: 20px;
+  }
+
+  .calendar-sub {
+    font-size: 13px;
+  }
+
+  .calendar-card {
+    padding: 16px;
+    gap: 14px;
+  }
+
+  .calendar-grid-cells {
+    gap: 5px;
+  }
+
+  .day-number {
+    font-size: 13px;
+  }
+
+  .streak-indicator {
+    font-size: 9px;
+    top: 2px;
+    right: 2px;
+  }
+
+  .month-year-label {
+    font-size: 16px;
+  }
+
+  /* Side panel stacks back to column on small tablets */
+  .streak-summary-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .streak-stats-card h3,
+  .day-detail-card h3 {
+    font-size: 14px;
+  }
+
+  .streak-stat .stat-num {
+    font-size: 20px;
+  }
+}
+
+/* ── Mobile (≤480px) ── */
+@media (max-width: 480px) {
+  .calendar-container {
+    gap: 16px;
+  }
+
+  .calendar-title {
+    font-size: 18px;
+  }
+
+  .calendar-card {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .calendar-grid-header {
+    font-size: 10px;
+    padding-bottom: 8px;
+  }
+
+  .calendar-grid-cells {
+    gap: 4px;
+  }
+
+  .day-number {
+    font-size: 11px;
+  }
+
+  /* Hide flame on very small cells */
+  .streak-indicator {
+    display: none;
+  }
+
+  .cal-nav-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .month-year-label {
+    font-size: 15px;
+  }
+
+  .streak-stats-card,
+  .day-detail-card {
+    padding: 14px 12px;
+  }
+
+  .streak-grid {
+    gap: 8px;
+  }
+
+  .streak-stat {
+    padding: 10px 8px;
+  }
+
+  .streak-stat .stat-num {
+    font-size: 18px;
+  }
+
+  .streak-stat .stat-lbl {
+    font-size: 10px;
+  }
+
+  .day-word-pill {
+    padding: 7px 10px;
+  }
+
+  .dw-name {
+    font-size: 13px;
+  }
+
+  .empty-detail {
+    padding: 24px 12px;
+  }
+
+  .calendar-prompt-icon {
+    font-size: 26px;
+  }
+}
+
+/* ── Very small phones (≤360px) ── */
+@media (max-width: 360px) {
+  .calendar-card {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .calendar-grid-cells {
+    gap: 3px;
+  }
+
+  .day-number {
+    font-size: 10px;
+  }
+
+  .calendar-grid-header {
+    font-size: 9px;
+  }
+
+  .month-year-label {
+    font-size: 14px;
+  }
+
+  .cal-nav-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+
+  .streak-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+}
+
+/* ── Landscape phones ── */
+@media (max-height: 500px) and (max-width: 768px) {
+  .calendar-layout {
+    grid-template-columns: 1fr 240px;
+  }
+
+  .streak-summary-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .calendar-card {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .calendar-grid-cells {
+    gap: 4px;
+  }
+
+  .day-number {
+    font-size: 11px;
   }
 }
