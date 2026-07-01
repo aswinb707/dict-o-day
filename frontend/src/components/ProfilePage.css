@@ -1,18 +1,18 @@
 .profile-container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: clamp(16px, 3vw, 24px);
   width: 100%;
 }
 
 .profile-title {
-  font-size: 26px;
+  font-size: clamp(19px, 4vw, 26px);
   font-weight: 700;
   color: var(--text-1);
 }
 
 .profile-sub {
-  font-size: 14px;
+  font-size: clamp(12px, 2vw, 14px);
   color: var(--text-2);
   margin-top: 4px;
 }
@@ -21,11 +21,11 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 32px;
+  padding: clamp(16px, 4vw, 32px);
   box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: clamp(14px, 3vw, 24px);
 }
 
 /* Success Banner */
@@ -33,9 +33,9 @@
   background: rgba(99, 153, 34, 0.1);
   color: var(--green);
   border: 1px solid rgba(99, 153, 34, 0.2);
-  padding: 12px 18px;
+  padding: clamp(8px, 1.5vw, 12px) clamp(10px, 2vw, 18px);
   border-radius: var(--radius-sm);
-  font-size: 14px;
+  font-size: clamp(12px, 1.8vw, 14px);
   font-weight: 600;
 }
 
@@ -43,36 +43,37 @@
 .profile-avatar-sec {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: clamp(12px, 2.5vw, 20px);
 }
 
 .profile-avatar-large {
-  width: 80px;
-  height: 80px;
+  width: clamp(52px, 10vw, 80px);
+  height: clamp(52px, 10vw, 80px);
   border-radius: 50%;
   background: var(--amber);
   color: #fff;
-  font-size: 32px;
+  font-size: clamp(20px, 4vw, 32px);
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 10px rgba(239, 159, 39, 0.25);
+  flex-shrink: 0;
 }
 
 .profile-avatar-meta h3 {
-  font-size: 20px;
+  font-size: clamp(15px, 2.5vw, 20px);
   font-weight: 700;
   color: var(--text-1);
 }
 
 .profile-level-badge {
   display: inline-block;
-  font-size: 12px;
+  font-size: clamp(10px, 1.5vw, 12px);
   font-weight: 600;
   color: var(--amber-dark);
   background: var(--amber-light);
-  padding: 2px 10px;
+  padding: 2px clamp(7px, 1.5vw, 10px);
   border-radius: 999px;
   margin-top: 6px;
 }
@@ -87,59 +88,59 @@
 .profile-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: clamp(14px, 3vw, 24px);
 }
 
 .p-field {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
 }
 
 .p-label {
-  font-size: 14px;
+  font-size: clamp(12px, 1.8vw, 14px);
   font-weight: 600;
   color: var(--text-1);
 }
 
-.p-input, .p-select {
-  padding: 12px 16px;
+.p-input,
+.p-select {
+  padding: clamp(9px, 1.8vw, 12px) clamp(10px, 2vw, 16px);
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
-  font-size: 15px;
+  font-size: clamp(13px, 2vw, 15px);
   background: var(--bg);
   color: var(--text-1);
   transition: border-color 0.15s;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.p-input:focus, .p-select:focus {
+.p-input:focus,
+.p-select:focus {
   outline: none;
   border-color: var(--amber);
 }
 
-.p-input:disabled {
-  background: var(--border);
-  color: var(--text-3);
-  cursor: not-allowed;
-  opacity: 0.75;
-}
-
 .p-diff-row {
   display: flex;
-  gap: 10px;
+  gap: clamp(6px, 1.5vw, 10px);
 }
 
 .p-diff-pill {
   flex: 1;
   background: var(--bg);
   border: 1px solid var(--border);
-  padding: 12px;
-  font-size: 14px;
+  padding: clamp(8px, 1.8vw, 12px);
+  font-size: clamp(11px, 1.8vw, 14px);
   font-weight: 600;
   color: var(--text-2);
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.15s;
+  min-width: 0;
 }
 
 .p-diff-pill:hover {
@@ -154,7 +155,7 @@
 }
 
 .field-hint {
-  font-size: 11px;
+  font-size: clamp(10px, 1.4vw, 11px);
   color: var(--text-3);
 }
 
@@ -163,12 +164,13 @@
   color: #fff;
   border: none;
   border-radius: var(--radius-sm);
-  padding: 14px 28px;
+  padding: clamp(10px, 2vw, 14px) clamp(16px, 3vw, 28px);
   font-weight: 700;
-  font-size: 15px;
+  font-size: clamp(13px, 1.8vw, 15px);
   cursor: pointer;
   align-self: flex-start;
   transition: all 0.15s;
+  white-space: nowrap;
 }
 
 .p-save-btn:hover {
@@ -176,17 +178,12 @@
   box-shadow: 0 4px 12px rgba(186, 117, 23, 0.2);
 }
 
-@media (max-width: 768px) {
-  .profile-form-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 .profile-btn-row {
   display: flex;
-  gap: 16px;
+  gap: clamp(8px, 2vw, 16px);
   align-items: center;
   align-self: flex-start;
+  flex-wrap: wrap;
 }
 
 .p-logout-btn {
@@ -194,11 +191,12 @@
   color: #ef4444;
   border: 1px solid #ef4444;
   border-radius: var(--radius-sm);
-  padding: 14px 28px;
+  padding: clamp(10px, 2vw, 14px) clamp(16px, 3vw, 28px);
   font-weight: 700;
-  font-size: 15px;
+  font-size: clamp(13px, 1.8vw, 15px);
   cursor: pointer;
   transition: all 0.15s;
+  white-space: nowrap;
 }
 
 .p-logout-btn:hover {
