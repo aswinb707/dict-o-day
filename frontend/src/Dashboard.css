@@ -707,6 +707,25 @@ body {
   border-color: #fbbf24;
 }
 
+.delete-card-btn {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+  font-weight: 700;
+  font-size: 10px;
+  cursor: pointer;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+}
+
+.delete-card-btn:hover {
+  background: #ef4444;
+  color: #fff;
+  border-color: #ef4444;
+}
+
 /* ══════════════════════════
    RESPONSIVE BREAKPOINTS
 ══════════════════════════ */
