@@ -66,9 +66,17 @@ body {
   position: sticky;
   top: 0;
   height: 100vh;
+  height: 100dvh; /* FIX: dynamic viewport height so sticky sidebar doesn't jump/overlap when mobile browser chrome resizes */
   flex-shrink: 0;
   z-index: 100;
   transition: width 0.2s ease;
+}
+
+/* FIX: reinforce sticky containing block above mobile bottom-nav breakpoint so sidebar never visually detaches from the flex row */
+@media (min-width: 481px) {
+  .sidebar {
+    align-self: flex-start;
+  }
 }
 
 .sidebar-brand {
@@ -826,7 +834,7 @@ body {
     font-size: 18px;
   }
 
-  /* Hide user info text */
+  /* FIX: sidebar-bottom no longer forced to overflow:hidden's clipped area on collapsed strip; avatar-only view stays visible */
   .sidebar-bottom {
     padding: 12px 8px 0;
   }
@@ -905,7 +913,28 @@ body {
     display: none;
   }
 
+  /* FIX: profile is no longer hidden — repositioned as a compact floating avatar
+     in the top-right corner so it stays reachable on mobile instead of vanishing */
   .sidebar-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-top: none;
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 201;
+  }
+
+  .sidebar-bottom .user-pill {
+    padding: 4px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    border-radius: 50%;
+  }
+
+  .sidebar-bottom .user-info {
     display: none;
   }
 
@@ -1074,6 +1103,7 @@ body {
   .sidebar {
     width: 56px;
     height: 100vh;
+    height: 100dvh;
     position: sticky;
     top: 0;
     flex-direction: column;
