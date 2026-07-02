@@ -249,22 +249,56 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
               });
               setChartData(newChartData);
 
-              fetch(`${API_BASE_URL}/api/users/me/streak`, {
-                headers: { "Authorization": `Bearer ${token}` }
-              })
-                .then(res => res.json())
-                .then(streakRes => {
-                  const activeStreak = streakRes.streakCount || 0;
-                  setStreakCount(activeStreak);
-                  const thisWeekTotal = newChartData.reduce((sum, item) => sum + item.words, 0);
-                  const avgAccuracy = analyticsRes.data.averageTestAccuracy != null ? Math.round(analyticsRes.data.averageTestAccuracy) : 0;
-                  setStats([
-                    { label: "Day streak", value: String(activeStreak), icon: "🔥" },
-                    { label: "Words learned", value: String(analyticsRes.data.totalWordsStudied || 0), icon: "📚" },
-                    { label: "Test accuracy", value: `${avgAccuracy}%`, icon: "🎯" },
-                    { label: "This week", value: String(thisWeekTotal), icon: "📅" },
-                  ]);
-                });
+              // Calculate consecutive learning streak dynamically based on local dates of learned words
+              const getLocalDateString = (dateObj) => {
+                const year = dateObj.getFullYear();
+                const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                const day = String(dateObj.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+              };
+
+              const calculateStreakCount = (wordsList) => {
+                if (!wordsList || wordsList.length === 0) return 0;
+                const uniqueDates = Array.from(new Set(wordsList.map(w => w.dateLearned)));
+                const todayStr = getLocalDateString(new Date());
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayStr = getLocalDateString(yesterday);
+                const dateSet = new Set(uniqueDates);
+
+                let currentStreak = 0;
+                let checkDate = new Date(); // Start checking from today
+
+                if (!dateSet.has(todayStr)) {
+                  if (dateSet.has(yesterdayStr)) {
+                    checkDate = yesterday;
+                  } else {
+                    return 0;
+                  }
+                }
+
+                while (true) {
+                  const checkDateStr = getLocalDateString(checkDate);
+                  if (dateSet.has(checkDateStr)) {
+                    currentStreak++;
+                    checkDate.setDate(checkDate.getDate() - 1);
+                  } else {
+                    break;
+                  }
+                }
+                return currentStreak;
+              };
+
+              const activeStreak = calculateStreakCount(mappedLearned);
+              setStreakCount(activeStreak);
+              const thisWeekTotal = newChartData.reduce((sum, item) => sum + item.words, 0);
+              const avgAccuracy = analyticsRes.data.averageTestAccuracy != null ? Math.round(analyticsRes.data.averageTestAccuracy) : 0;
+              setStats([
+                { label: "Day streak", value: String(activeStreak), icon: "🔥" },
+                { label: "Words learned", value: String(analyticsRes.data.totalWordsStudied || 0), icon: "📚" },
+                { label: "Test accuracy", value: `${avgAccuracy}%`, icon: "🎯" },
+                { label: "This week", value: String(thisWeekTotal), icon: "📅" },
+              ]);
             }
           });
       })
