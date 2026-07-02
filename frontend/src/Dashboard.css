@@ -67,7 +67,7 @@ body {
   position: sticky;
   top: 0;
   height: 100%;
-  height: 100dvh; /* FIX: dynamic viewport height so sticky sidebar doesn't jump/overlap when mobile browser chrome resizes */
+  /* FIX: dynamic viewport height so sticky sidebar doesn't jump/overlap when mobile browser chrome resizes */
   flex-shrink: 0;
   z-index: 100;
   transition: width 0.2s ease;
