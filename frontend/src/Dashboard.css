@@ -61,13 +61,21 @@ body {
   width: var(--sidebar-w);
   background: var(--surface);
   border-right: 1px solid var(--border);
+
   display: flex;
   flex-direction: column;
   padding: 24px 0;
-  position: sticky;
+
+  position: fixed;
   top: 0;
-  height: 100%;
-  /* FIX: dynamic viewport height so sticky sidebar doesn't jump/overlap when mobile browser chrome resizes */
+  left: 0;
+
+  width: var(--sidebar-w);
+  height: 100vh;
+  height: 100dvh;
+
+  overflow: hidden;
+
   flex-shrink: 0;
   z-index: 100;
   transition: width 0.2s ease;
@@ -214,11 +222,14 @@ body {
 .main {
   flex: 1;
   min-width: 0;
-  /* prevent flex blowout */
+
+  margin-left: var(--sidebar-w);
+
   padding: 32px 36px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+
   overflow-x: hidden;
 }
 
@@ -853,6 +864,7 @@ body {
   .main {
     padding: 20px 16px;
     gap: 18px;
+    margin-left: var(--sidebar-w);
   }
 
   .page-title {
@@ -976,10 +988,10 @@ body {
 
   /* Main content with padding for bottom nav */
   .main {
+    margin-left: 0;
     padding: 16px 12px 90px;
-    /* bottom padding so content isn't behind nav */
     gap: 16px;
-  }
+}
 
   /* FIX: push topbar down below the fixed avatar circle so the streak badge
      can never sit underneath it, regardless of badge width/wrapping */
@@ -1113,14 +1125,13 @@ body {
     width: 56px;
     height: 100vh;
     height: 100dvh;
-    position: sticky;
+    position: fixed
     top: 0;
     flex-direction: column;
     border-right: 1px solid var(--border);
     border-top: none;
     bottom: auto;
   }
-
   .sidebar-nav {
     flex-direction: column;
     justify-content: flex-start;
