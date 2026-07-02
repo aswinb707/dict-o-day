@@ -93,9 +93,6 @@ export default function JournalPage({ learnedWords, onWordSelect, onAddCustomWor
           >
             📝 TOEFL Booking
           </a>
-          <button className="add-word-toggle-btn" onClick={() => setShowAddForm(!showAddForm)}>
-            {showAddForm ? "Close Form" : "+ Add Custom Word"}
-          </button>
         </div>
         <button className="add-word-toggle-btn" onClick={() => setShowAddForm(!showAddForm)}>
           {showAddForm ? "Close Form" : "+ Add Custom Word"}
