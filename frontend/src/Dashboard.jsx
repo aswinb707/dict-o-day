@@ -810,6 +810,8 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
           <AITutorPage
             initialWord={initialAIWord}
             onClearInitialWord={() => setInitialAIWord("")}
+            learnedWords={learnedWords}
+            todayWords={todayWords}
           />
         )}
 
