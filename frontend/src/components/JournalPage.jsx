@@ -77,7 +77,7 @@ export default function JournalPage({ learnedWords, onWordSelect, onAddCustomWor
           <p className="journal-sub">Alphabetical catalog of all learned words</p>
         </div>
          <div className="journal-header-actions">
-            <h1 className="journal-title">Test Links:</h1>
+            <h4 className="journal-title">Test Links:</h4>
           <a
             href="https://ielts.org/test-centres"
             target="_blank"
