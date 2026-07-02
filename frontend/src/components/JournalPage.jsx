@@ -1,521 +1,256 @@
-.journal-container {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  width: 100%;
-}
-
-.journal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.journal-title {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--text-1);
-}
-
-.journal-sub {
-  font-size: 14px;
-  color: var(--text-2);
-  margin-top: 4px;
-}
-
-.add-word-toggle-btn {
-  background: var(--amber);
-  color: #fff;
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 10px 18px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.add-word-toggle-btn:hover {
-  background: var(--amber-dark);
-}
-
-/* Exam Booking Buttons */
-.journal-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.booking-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 10px 18px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
-
-.booking-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
-}
-
-.booking-btn:active {
-  transform: translateY(0);
-}
-
-.booking-btn--ielts {
-  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
-  color: #fff;
-}
-
-.booking-btn--ielts:hover {
-  background: linear-gradient(135deg, #1e40af, #2563eb);
-}
-
-.booking-btn--toefl {
-  background: linear-gradient(135deg, #059669, #10b981);
-  color: #fff;
-}
-
-.booking-btn--toefl:hover {
-  background: linear-gradient(135deg, #047857, #059669);
-}
-
-
-/* Custom Word Form styling */
-.add-word-form {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 24px;
-  box-shadow: var(--shadow-card);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  animation: slideDown 0.3s ease-out;
-}
-
-.add-word-form h3 {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text-1);
-}
-
-.form-error-msg {
-  color: var(--red);
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.form-field label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-2);
-}
-
-.form-field input,
-.form-field select {
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  font-size: 14px;
-  background: var(--bg);
-  color: var(--text-1);
-}
-
-.form-field input:focus,
-.form-field select:focus {
-  outline: none;
-  border-color: var(--amber);
-}
-
-.form-sentences-block {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.form-sentences-block label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-2);
-  margin-bottom: 2px;
-}
-
-.sentence-input {
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  font-size: 14px;
-  background: var(--bg);
-  color: var(--text-1);
-}
-
-.add-word-submit-btn {
-  background: var(--green);
-  color: #fff;
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 12px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  align-self: flex-start;
-  transition: opacity 0.15s;
-}
-
-.add-word-submit-btn:hover {
-  opacity: 0.9;
-}
-
-/* Search Bar styling */
-.search-bar-wrapper {
-  position: relative;
-  width: 100%;
-}
-
-.search-icon {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-3);
-  font-size: 16px;
-}
-
-.journal-search-input {
-  width: 100%;
-  padding: 14px 14px 14px 44px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text-1);
-  font-size: 15px;
-  box-shadow: var(--shadow);
-}
-
-.journal-search-input:focus {
-  outline: none;
-  border-color: var(--amber);
-}
-
-.search-clear-btn {
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
-  color: var(--text-3);
-}
-
-/* Empty State */
-.journal-empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 60px;
-  text-align: center;
-  background: var(--surface);
-  border-radius: var(--radius);
-  border: 1px dashed var(--border);
-}
-
-.empty-icon {
-  font-size: 40px;
-}
-
-/* Journal Grid */
-.journal-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-.journal-word-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  box-shadow: var(--shadow-card);
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.journal-word-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-}
-
-.journal-card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.journal-word-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-1);
-}
-
-.journal-pos-tag {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--amber-dark);
-  background: var(--amber-light);
-  padding: 2px 8px;
-  border-radius: 999px;
-}
-
-.journal-word-pron {
-  font-size: 12px;
-  color: var(--text-3);
-}
-
-.journal-word-def {
-  font-size: 13px;
-  color: var(--text-2);
-  line-height: 1.5;
-  flex: 1;
-}
-
-.journal-mastery-indicator {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: 8px;
-}
-
-.mastery-lbl {
-  font-size: 11px;
-  color: var(--text-3);
-  font-weight: 600;
-}
-
-.mini-track {
-  height: 4px;
-  background: var(--bg);
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.mini-fill {
-  height: 100%;
-  border-radius: 999px;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 1024px) {
-  .journal-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .form-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .journal-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .journal-header {
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .journal-title {
-    font-size: 21px;
-  }
-
-  .journal-sub {
-    font-size: 12.5px;
-  }
-
-  .add-word-toggle-btn {
-    padding: 9px 14px;
-    font-size: 13px;
-  }
-
-  .add-word-form {
-    padding: 16px;
-    gap: 12px;
-  }
-
-  .add-word-form h3 {
-    font-size: 14.5px;
-  }
-
-  .form-field input,
-  .form-field select,
-  .sentence-input {
-    padding: 9px 10px;
-    font-size: 13.5px;
-  }
-
-  .add-word-submit-btn {
-    align-self: stretch;
-    text-align: center;
-    padding: 11px;
-    font-size: 13.5px;
-  }
-
-  .journal-search-input {
-    padding: 12px 12px 12px 40px;
-    font-size: 14px;
-  }
-
-  .search-icon {
-    left: 12px;
-    font-size: 14px;
-  }
-
-  .search-clear-btn {
-    right: 12px;
-  }
-
-  .journal-empty-state {
-    padding: 36px 20px;
-  }
-
-  .empty-icon {
-    font-size: 32px;
-  }
-
-  .journal-word-card {
-    padding: 16px;
-    gap: 6px;
-  }
-
-  .journal-word-title {
-    font-size: 16px;
-  }
-
-  .journal-pos-tag {
-    font-size: 9px;
-    padding: 2px 7px;
-  }
-
-  .journal-word-pron {
-    font-size: 11px;
-  }
-
-  .journal-word-def {
-    font-size: 12.5px;
-  }
-
-  .mastery-lbl {
-    font-size: 10px;
-  }
-}
-
-@media (max-width: 400px) {
-  .journal-container {
-    gap: 18px;
-  }
-
-  .journal-title {
-    font-size: 19px;
-  }
-
-  .journal-word-card {
-    padding: 14px;
-  }
-
-  .add-word-form {
-    padding: 14px;
-  }
-}
-
-/* Exam Booking Buttons */
-.journal-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.booking-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border: none;
-  border-radius: var(--radius-sm);
-  padding: 10px 18px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
-
-.booking-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
-}
-
-.booking-btn:active {
-  transform: translateY(0);
-}
-
-.booking-btn--ielts {
-  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
-  color: #fff;
-}
-
-.booking-btn--ielts:hover {
-  background: linear-gradient(135deg, #1e40af, #2563eb);
-}
-
-.booking-btn--toefl {
-  background: linear-gradient(135deg, #059669, #10b981);
-  color: #fff;
-}
-
-.booking-btn--toefl:hover {
-  background: linear-gradient(135deg, #047857, #059669);
+import React, { useState, useMemo } from "react";
+import "./JournalPage.css";
+
+export default function JournalPage({ learnedWords, onWordSelect, onAddCustomWord }) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newWord, setNewWord] = useState({
+    word: "",
+    pos: "Noun",
+    definition: "",
+    pronunciation: "",
+    synonyms: "",
+    antonyms: "",
+    sentence1: "",
+    sentence2: "",
+    sentence3: "",
+  });
+  const [formError, setFormError] = useState("");
+
+  const sortedAndFilteredWords = useMemo(() => {
+    return [...learnedWords]
+      .filter((w) => w.word.toLowerCase().includes(searchTerm.toLowerCase()))
+      .sort((a, b) => a.word.localeCompare(b.word));
+  }, [learnedWords, searchTerm]);
+
+  const handleAddSubmit = (e) => {
+    e.preventDefault();
+    if (!newWord.word.trim() || !newWord.definition.trim() || !newWord.pronunciation.trim()) {
+      setFormError("Word, pronunciation, and meaning are required.");
+      return;
+    }
+
+    const sentences = [
+      newWord.sentence1.trim() || `The word ${newWord.word} is very interesting.`,
+      newWord.sentence2.trim() || `We practice using ${newWord.word} today.`,
+      newWord.sentence3.trim() || `Expanding vocabulary helps us express ${newWord.word} easily.`,
+    ];
+
+    const addedWord = {
+      id: Date.now(),
+      word: newWord.word.trim(),
+      pos: newWord.pos,
+      definition: newWord.definition.trim(),
+      pronunciation: newWord.pronunciation.trim(),
+      synonyms: newWord.synonyms.trim() || "N/A",
+      antonyms: newWord.antonyms.trim() || "N/A",
+      sentences,
+      mastery: 10,
+      dateLearned: new Date().toISOString().split("T")[0],
+    };
+
+    onAddCustomWord(addedWord);
+
+    // Reset Form
+    setNewWord({
+      word: "",
+      pos: "Noun",
+      definition: "",
+      pronunciation: "",
+      synonyms: "",
+      antonyms: "",
+      sentence1: "",
+      sentence2: "",
+      sentence3: "",
+    });
+    setFormError("");
+    setShowAddForm(false);
+  };
+
+  return (
+    
+    <div className="journal-container animate-fade-in">
+      <header className="journal-header">
+        <div className="journal-header-actions">
+          <a
+            href="https://ielts.org/test-centres"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="booking-btn booking-btn--ielts"
+          >
+            📋 IELTS Booking
+          </a>
+          <a
+            href="https://toeflibt.ets.org/welcome"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="booking-btn booking-btn--toefl"
+          >
+            📝 TOEFL Booking
+          </a>
+          <button className="add-word-toggle-btn" onClick={() => setShowAddForm(!showAddForm)}>
+            {showAddForm ? "Close Form" : "+ Add Custom Word"}
+          </button>
+        </div>
+        <div>
+          <h1 className="journal-title">My Learning Journal</h1>
+          <p className="journal-sub">Alphabetical catalog of all learned words</p>
+        </div>
+        <button className="add-word-toggle-btn" onClick={() => setShowAddForm(!showAddForm)}>
+          {showAddForm ? "Close Form" : "+ Add Custom Word"}
+        </button>
+      </header>
+
+      {showAddForm && (
+        <form className="add-word-form" onSubmit={handleAddSubmit}>
+          <h3>Add Custom Word</h3>
+          {formError && <p className="form-error-msg">{formError}</p>}
+          <div className="form-grid">
+            <div className="form-field">
+              <label>Word *</label>
+              <input
+                type="text"
+                placeholder="e.g. Serendipity"
+                value={newWord.word}
+                onChange={(e) => setNewWord({ ...newWord, word: e.target.value })}
+              />
+            </div>
+            <div className="form-field">
+              <label>Part of Speech</label>
+              <select value={newWord.pos} onChange={(e) => setNewWord({ ...newWord, pos: e.target.value })}>
+                <option>Noun</option>
+                <option>Verb</option>
+                <option>Adjective</option>
+                <option>Adverb</option>
+                <option>Conjunction</option>
+              </select>
+            </div>
+            <div className="form-field">
+              <label>Pronunciation *</label>
+              <input
+                type="text"
+                placeholder="e.g. seh-run-DIP-ih-tee"
+                value={newWord.pronunciation}
+                onChange={(e) => setNewWord({ ...newWord, pronunciation: e.target.value })}
+              />
+            </div>
+            <div className="form-field">
+              <label>Definition *</label>
+              <input
+                type="text"
+                placeholder="e.g. Finding valuable things by chance"
+                value={newWord.definition}
+                onChange={(e) => setNewWord({ ...newWord, definition: e.target.value })}
+              />
+            </div>
+            <div className="form-field">
+              <label>Synonyms</label>
+              <input
+                type="text"
+                placeholder="e.g. chance, fate, fluke"
+                value={newWord.synonyms}
+                onChange={(e) => setNewWord({ ...newWord, synonyms: e.target.value })}
+              />
+            </div>
+            <div className="form-field">
+              <label>Antonyms</label>
+              <input
+                type="text"
+                placeholder="e.g. design, plan, misfortune"
+                value={newWord.antonyms}
+                onChange={(e) => setNewWord({ ...newWord, antonyms: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <div className="form-sentences-block">
+            <label>Usage Examples (Up to 3)</label>
+            <input
+              type="text"
+              placeholder="Example Sentence 1"
+              value={newWord.sentence1}
+              onChange={(e) => setNewWord({ ...newWord, sentence1: e.target.value })}
+              className="sentence-input"
+            />
+            <input
+              type="text"
+              placeholder="Example Sentence 2"
+              value={newWord.sentence2}
+              onChange={(e) => setNewWord({ ...newWord, sentence2: e.target.value })}
+              className="sentence-input"
+            />
+            <input
+              type="text"
+              placeholder="Example Sentence 3"
+              value={newWord.sentence3}
+              onChange={(e) => setNewWord({ ...newWord, sentence3: e.target.value })}
+              className="sentence-input"
+            />
+          </div>
+
+          <button type="submit" className="add-word-submit-btn">
+            Save Word to Journal
+          </button>
+        </form>
+      )}
+
+      {/* Search Filter */}
+      <div className="search-bar-wrapper">
+        <span className="search-icon">🔍</span>
+        <input
+          type="text"
+          className="journal-search-input"
+          placeholder="Search journal words..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        {searchTerm && (
+          <button className="search-clear-btn" onClick={() => setSearchTerm("")}>
+            ✕
+          </button>
+        )}
+      </div>
+
+      {sortedAndFilteredWords.length === 0 ? (
+        <div className="journal-empty-state">
+          <span className="empty-icon">📓</span>
+          <p>No words found in your journal matching your query.</p>
+        </div>
+      ) : (
+        <div className="journal-grid">
+          {sortedAndFilteredWords.map((wordItem) => (
+            <div
+              key={wordItem.id}
+              className="journal-word-card"
+              onClick={() => onWordSelect(wordItem)}
+            >
+              <div className="journal-card-top">
+                <h3 className="journal-word-title">{wordItem.word}</h3>
+                <span className="journal-pos-tag">{wordItem.pos}</span>
+              </div>
+              <p className="journal-word-pron">/{wordItem.pronunciation}/</p>
+              <p className="journal-word-def">{wordItem.definition}</p>
+              <div className="journal-mastery-indicator">
+                <span className="mastery-lbl">Mastery: {wordItem.mastery}%</span>
+                <div className="mini-track">
+                  <div
+                    className="mini-fill"
+                    style={{
+                      width: `${wordItem.mastery}%`,
+                      backgroundColor:
+                        wordItem.mastery >= 75
+                          ? "var(--green)"
+                          : wordItem.mastery >= 45
+                          ? "var(--amber)"
+                          : "var(--red)",
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }

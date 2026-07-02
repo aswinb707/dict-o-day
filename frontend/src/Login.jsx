@@ -294,6 +294,17 @@ export default function Login({ onLogin, onRegister }) {
               >
                 {loading ? <span className="spinner" /> : "Log in"}
               </button>
+
+              <div style={{ marginTop: "12px", textAlign: "center", fontSize: "12px", color: "var(--text-3)" }}>
+                By continuing, you agree to our{" "}
+                <a href="/terms.html" target="_blank" rel="noopener noreferrer" style={{ color: "var(--amber-dark)", textDecoration: "none", fontWeight: "600" }}>
+                  Terms of Service
+                </a>{" "}
+                and{" "}
+                <a href="/privacy.html" target="_blank" rel="noopener noreferrer" style={{ color: "var(--amber-dark)", textDecoration: "none", fontWeight: "600" }}>
+                  Privacy Policy
+                </a>.
+              </div>
             </form>
           )}
 
@@ -412,6 +423,17 @@ export default function Login({ onLogin, onRegister }) {
                     "Create account"
                   )}
                 </button>
+              </div>
+
+              <div style={{ marginTop: "12px", textAlign: "center", fontSize: "12px", color: "var(--text-3)" }}>
+                By continuing, you agree to our{" "}
+                <a href="/terms.html" target="_blank" rel="noopener noreferrer" style={{ color: "var(--amber-dark)", textDecoration: "none", fontWeight: "600" }}>
+                  Terms of Service
+                </a>{" "}
+                and{" "}
+                <a href="/privacy.html" target="_blank" rel="noopener noreferrer" style={{ color: "var(--amber-dark)", textDecoration: "none", fontWeight: "600" }}>
+                  Privacy Policy
+                </a>.
               </div>
             </form>
           )}
