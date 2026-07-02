@@ -908,19 +908,23 @@ body {
 
   /* Bottom navigation bar */
   .sidebar {
-    width: 100%;
-    height: auto;
     position: fixed;
-    bottom: 0;
     left: 0;
     right: 0;
+    bottom: 0;
     top: auto;
+
+    width: 100%;
+    height: 70px;
+
+    display: flex;
     flex-direction: row;
-    padding: 0;
-    border-right: none;
+
+    background: var(--surface);
     border-top: 1px solid var(--border);
-    z-index: 200;
-    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
+    border-right: none;
+
+    z-index: 1000;
   }
 
   .sidebar-brand {
@@ -987,12 +991,12 @@ body {
   }
 
   /* Main content with padding for bottom nav */
+
+
   .main {
     margin-left: 0;
-    padding: 16px 12px 90px;
-    gap: 16px;
-}
-
+    padding-bottom: 90px;
+  }
   /* FIX: push topbar down below the fixed avatar circle so the streak badge
      can never sit underneath it, regardless of badge width/wrapping */
   .topbar {
