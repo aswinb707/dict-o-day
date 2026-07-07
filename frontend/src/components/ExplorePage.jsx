@@ -10,6 +10,7 @@ export default function ExplorePage({ onAddWordSuccess, onBack }) {
   const [added, setAdded] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+  const [spellingSuggestion, setSpellingSuggestion] = useState("");
 
   const performSearch = (wordToSearch) => {
     if (!wordToSearch.trim()) return;
@@ -18,6 +19,7 @@ export default function ExplorePage({ onAddWordSuccess, onBack }) {
     setError(null);
     setWordData(null);
     setAdded(false);
+    setSpellingSuggestion("");
 
     const token = localStorage.getItem("accessToken");
     fetch(`${API_BASE_URL}/api/words/preview?word=${encodeURIComponent(wordToSearch.trim())}`, {
@@ -26,7 +28,9 @@ export default function ExplorePage({ onAddWordSuccess, onBack }) {
       .then(res => {
         return res.json().then(data => {
           if (!res.ok || !data.success) {
-            throw new Error(data.error || data.message || "Failed to fetch details for this word.");
+            const err = new Error(data.error || data.message || "Failed to fetch details for this word.");
+            err.suggestion = data.suggestion;
+            throw err;
           }
           return data;
         });
@@ -43,6 +47,9 @@ export default function ExplorePage({ onAddWordSuccess, onBack }) {
         setSearching(false);
         console.error(err);
         setError(err.message || "An error occurred while generating details. Please try again.");
+        if (err.suggestion) {
+          setSpellingSuggestion(err.suggestion);
+        }
       });
   };
 
@@ -247,7 +254,24 @@ export default function ExplorePage({ onAddWordSuccess, onBack }) {
         </div>
       )}
 
-      {error && <div className="explore-error">{error}</div>}
+      {error && (
+        <div className="explore-error">
+          <div>{error}</div>
+          {spellingSuggestion && (
+            <div className="spelling-suggestion" style={{ marginTop: "12px", fontSize: "14px" }}>
+              Did you mean:{" "}
+              <button
+                type="button"
+                className="suggestion-link-btn"
+                onClick={() => handleSuggestionClick(spellingSuggestion)}
+              >
+                {spellingSuggestion}
+              </button>
+              ?
+            </div>
+          )}
+        </div>
+      )}
 
       {wordData && (
         <div className="preview-section">

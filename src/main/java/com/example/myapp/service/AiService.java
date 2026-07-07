@@ -165,7 +165,9 @@ public class AiService {
         List<Map<String, String>> messages = List.of(
             Map.of("role", "system", "content",
                 "You are an expert IELTS vocabulary coach. Generate dictionary details for the word: \"" + wordName + "\".\n" +
-                "CRITICAL: First check if the requested word is a valid, recognized English word. If the word is from another language (e.g. French like 'maison', German, Japanese, Spanish, etc.) or is not a real English word (e.g., gibberish, random letters like 'asdasd', 'xyzxyz'), you MUST set the \"definition\" key to \"ERROR: NOT AN ENGLISH WORD\" and set all other keys to null or empty.\n\n" +
+                "CRITICAL: First check if the requested word is a valid, recognized English word. " +
+                "If the word is misspelled or contains a typo (e.g. 'annilaton' instead of 'annihilation', 'recive' instead of 'receive', etc.), you MUST set the \"definition\" key to \"SUGGESTION: <correctly_spelled_word>\" (e.g. \"SUGGESTION: annihilation\") and all other fields (except \"word\") to null or empty.\n" +
+                "If the word is from another language (e.g. French like 'maison', German, Japanese, Spanish, etc.) or is not a real English word (e.g., gibberish, random letters like 'asdasd', 'xyzxyz'), you MUST set the \"definition\" key to \"ERROR: NOT AN ENGLISH WORD\" and set all other keys to null or empty.\n\n" +
                 "If it IS a valid English word, determine if the word is an advanced IELTS/interview-level vocabulary word (e.g. ubiquitous, ephemeral, resilient, pragmatic, etc.).\n" +
                 "If it IS an advanced IELTS-level word:\n" +
                 "- Set \"isIeltsLevel\" to true.\n" +

@@ -697,9 +697,12 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
                                     className="postpone-card-btn"
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      handlePostponeWord(w.id);
+                                      if (mastery !== 100) {
+                                        handlePostponeWord(w.id);
+                                      }
                                     }}
-                                    title="Postpone this word to tomorrow"
+                                    disabled={mastery === 100}
+                                    title={mastery === 100 ? "Cannot postpone fully mastered word" : "Postpone this word to tomorrow"}
                                   >
                                     ⏱ Postpone
                                   </button>
@@ -707,9 +710,12 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
                                     className="delete-card-btn"
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      handleDeleteWord(w.id);
+                                      if (mastery !== 100) {
+                                        handleDeleteWord(w.id);
+                                      }
                                     }}
-                                    title="Delete this word from your today's list"
+                                    disabled={mastery === 100}
+                                    title={mastery === 100 ? "Cannot delete fully mastered word" : "Delete this word from your today's list"}
                                   >
                                     🗑 Delete
                                   </button>

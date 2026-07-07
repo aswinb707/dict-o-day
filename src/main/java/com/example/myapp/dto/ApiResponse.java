@@ -16,6 +16,7 @@ public class ApiResponse<T> {
     private boolean success;
     private String message;
     private String error;
+    private String suggestion;
     private T data;
 
     public static <T> ApiResponse<T> ok(T data) {
@@ -36,6 +37,14 @@ public class ApiResponse<T> {
         return ApiResponse.<T>builder()
                 .success(false)
                 .error(error)
+                .build();
+    }
+
+    public static <T> ApiResponse<T> errorWithSuggestion(String error, String suggestion) {
+        return ApiResponse.<T>builder()
+                .success(false)
+                .error(error)
+                .suggestion(suggestion)
                 .build();
     }
 }

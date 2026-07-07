@@ -36,6 +36,14 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles spelling suggestions for misspelled words.
+     */
+    @ExceptionHandler(SpellingSuggestionException.class)
+    public ResponseEntity<ApiResponse<Void>> handleSpellingSuggestion(SpellingSuggestionException ex) {
+        return ResponseEntity.badRequest().body(ApiResponse.errorWithSuggestion(ex.getMessage(), ex.getSuggestion()));
+    }
+
+    /**
      * Handles access denied errors (unauthorized role).
      */
     @ExceptionHandler(AccessDeniedException.class)

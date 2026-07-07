@@ -65,6 +65,10 @@ public class WordService {
             }
             com.fasterxml.jackson.databind.JsonNode root = objectMapper.readTree(jsonStr);
             String def = root.path("definition").asText("Definition not found.");
+            if (def != null && def.toUpperCase().startsWith("SUGGESTION:")) {
+                String suggestion = def.substring("SUGGESTION:".length()).trim().replaceAll("[^a-zA-Z\\s\\-’']", "");
+                throw new com.example.myapp.exception.SpellingSuggestionException(suggestion);
+            }
             if ("ERROR: NOT AN ENGLISH WORD".equalsIgnoreCase(def) || def.contains("NOT AN ENGLISH WORD")) {
                 throw new IllegalArgumentException("The word '" + wordName + "' does not exist or is not a valid English word.");
             }
@@ -337,6 +341,9 @@ public class WordService {
                         .timesCorrect(0)
                         .masteryScore(0.0)
                         .build());
+        if (progress.getMasteryScore() != null && Math.round(progress.getMasteryScore() * 100) >= 100) {
+            throw new IllegalStateException("Cannot postpone a word with 100% mastery.");
+        }
         progress.setPostponedUntil(java.time.LocalDate.now().plusDays(1));
         progressRepository.save(progress);
 
@@ -362,6 +369,9 @@ public class WordService {
                         .timesCorrect(0)
                         .masteryScore(0.0)
                         .build());
+        if (progress.getMasteryScore() != null && Math.round(progress.getMasteryScore() * 100) >= 100) {
+            throw new IllegalStateException("Cannot delete a word with 100% mastery.");
+        }
         progress.setStatus("deleted_today");
         progress.setPostponedUntil(java.time.LocalDate.now().plusDays(1));
         progressRepository.save(progress);

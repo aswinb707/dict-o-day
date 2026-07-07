@@ -464,6 +464,11 @@
     width: 36px;
     height: 36px;
   }
+
+  .spelling-suggestion {
+    font-size: 13px !important;
+    margin-top: 8px !important;
+  }
 }
 
 /* ── Very small phones (≤360px) ── */
@@ -487,6 +492,11 @@
   .back-btn {
     padding: 6px 12px;
     font-size: 13px;
+  }
+
+  .spelling-suggestion {
+    font-size: 12px !important;
+    margin-top: 6px !important;
   }
 }
 
@@ -515,4 +525,28 @@
   .preview-main-word h2 {
     font-size: 24px;
   }
+}
+
+.spelling-suggestion {
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.suggestion-link-btn {
+  background: none !important;
+  border: none !important;
+  color: #6366f1 !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+  text-decoration: underline !important;
+  padding: 0 !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  display: inline !important;
+  box-shadow: none !important;
+  transition: color 0.15s ease !important;
+}
+
+.suggestion-link-btn:hover {
+  color: #4f46e5 !important;
 }
