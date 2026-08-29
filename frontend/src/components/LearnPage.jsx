@@ -282,11 +282,13 @@ export default function LearnPage({ wordsPool = [], onMarkLearned, onWordSelect 
 
         if (text) {
           const cleanText = text.toLowerCase().replace(/[^a-z]/g, "");
-          const cleanWord = activeWord.word.toLowerCase().replace(/[^a-z]/g, "");
+          const targetWord = activeWord.fusedWord ? activeWord.fusedWord : activeWord.word;
+          const targetPron = activeWord.fusedWord ? activeWord.fusedPronunciation : activeWord.pronunciation;
+          const cleanWord = targetWord.toLowerCase().replace(/[^a-z]/g, "");
           if (cleanText.includes(cleanWord) || cleanWord.includes(cleanText)) {
             setVoiceFeedback("🎉 Perfect pronunciation! You said it correctly.");
           } else {
-            setVoiceFeedback(`It sounded like: "${text}". Try pronouncing it as "${activeWord.pronunciation}".`);
+            setVoiceFeedback(`It sounded like: "${text}". Try pronouncing it as "${targetPron}".`);
           }
         }
       };
@@ -319,11 +321,13 @@ export default function LearnPage({ wordsPool = [], onMarkLearned, onWordSelect 
       if (mockSpeak) {
         setSpeechTranscript(mockSpeak);
         const cleanText = mockSpeak.toLowerCase().replace(/[^a-z]/g, "");
-        const cleanWord = activeWord.word.toLowerCase().replace(/[^a-z]/g, "");
+        const targetWord = activeWord.fusedWord ? activeWord.fusedWord : activeWord.word;
+        const targetPron = activeWord.fusedWord ? activeWord.fusedPronunciation : activeWord.pronunciation;
+        const cleanWord = targetWord.toLowerCase().replace(/[^a-z]/g, "");
         if (cleanText.includes(cleanWord) || cleanWord.includes(cleanText)) {
           setVoiceFeedback("🎉 Perfect pronunciation! You said it correctly.");
         } else {
-          setVoiceFeedback(`It sounded like: "${mockSpeak}". Try pronouncing it as "${activeWord.pronunciation}".`);
+          setVoiceFeedback(`It sounded like: "${mockSpeak}". Try pronouncing it as "${targetPron}".`);
         }
       }
     }
@@ -353,7 +357,8 @@ export default function LearnPage({ wordsPool = [], onMarkLearned, onWordSelect 
   const handleSpeak = (e) => {
     e.stopPropagation();
     if ("speechSynthesis" in window) {
-      const utterance = new SpeechSynthesisUtterance(activeWord.word);
+      const targetWord = activeWord.fusedWord ? activeWord.fusedWord : activeWord.word;
+      const utterance = new SpeechSynthesisUtterance(targetWord);
       utterance.rate = 0.95;
       window.speechSynthesis.speak(utterance);
     }
@@ -447,10 +452,10 @@ export default function LearnPage({ wordsPool = [], onMarkLearned, onWordSelect 
                       Pronounce the word aloud:
                     </p>
                     <h2 style={{ fontSize: "36px", color: "var(--amber)", margin: "10px 0", fontWeight: "800" }}>
-                      {activeWord.word}
+                      {activeWord.fusedWord ? activeWord.fusedWord : activeWord.word}
                     </h2>
                     <p style={{ color: "var(--text-3)", fontSize: "14px", fontStyle: "italic", marginBottom: "24px" }}>
-                      Phonetic: {activeWord.pronunciation}
+                      Phonetic: {activeWord.fusedWord ? activeWord.fusedPronunciation : activeWord.pronunciation}
                     </p>
 
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
@@ -654,13 +659,22 @@ export default function LearnPage({ wordsPool = [], onMarkLearned, onWordSelect 
                   <span className="study-flip-hint" style={{ color: "rgba(255,255,255,0.6)" }}>tap to flip</span>
                 )}
               </div>
-              <h2 className="study-word-title" style={{ color: "#ffffff", textShadow: "0 1px 2px rgba(0,0,0,0.3)" }}>{activeWord.word}</h2>
+              <h2 className="study-word-title" style={{ color: "#ffffff", textShadow: "0 1px 2px rgba(0,0,0,0.3)" }}>
+                {activeWord.fusedWord ? activeWord.fusedWord : activeWord.word}
+              </h2>
               <div className="study-audio-row">
-                <span className="study-word-pron" style={{ color: "rgba(255,255,255,0.7)" }}>/{activeWord.pronunciation}/</span>
+                <span className="study-word-pron" style={{ color: "rgba(255,255,255,0.7)" }}>
+                  /{activeWord.fusedWord ? activeWord.fusedPronunciation : activeWord.pronunciation}/
+                </span>
                 <button className="study-audio-btn" onClick={handleSpeak} title="Pronounce word" style={{ background: "rgba(255,255,255,0.15)", color: "#ffffff", border: "1px solid rgba(255,255,255,0.25)" }}>
                   🔊
                 </button>
               </div>
+              {activeWord.fusedWord && (
+                <div className="fused-basic-info" style={{ margin: "4px 0", fontSize: "14px", opacity: 0.9, background: "rgba(0,0,0,0.2)", padding: "4px 12px", borderRadius: "4px", display: "inline-block" }}>
+                  Basic: <strong style={{ color: "#fbbf24" }}>{activeWord.word}</strong>
+                </div>
+              )}
 
               <div className="study-mastery-sec">
                 <div className="study-mastery-lbl-row" style={{ color: "rgba(255, 255, 255, 0.75)" }}>
@@ -693,16 +707,20 @@ export default function LearnPage({ wordsPool = [], onMarkLearned, onWordSelect 
                 <span className="study-pos-tag" style={activeWord.fusedWord ? { background: "rgba(255,255,255,0.25)", color: "#ffffff" } : {}}>{activeWord.pos}</span>
                 <span className="study-flip-hint" style={{ color: "rgba(255,255,255,0.4)" }}>tap to flip</span>
               </div>
-              <h3 className="study-back-title" style={{ color: "#ffffff" }}>{activeWord.word}</h3>
+              <h3 className="study-back-title" style={{ color: "#ffffff" }}>
+                {activeWord.fusedWord ? activeWord.fusedWord : activeWord.word}
+              </h3>
               <div className="study-definition-block">
                 <span className="section-label" style={{ color: "rgba(255, 255, 255, 0.5)" }}>Definition</span>
-                <p className="study-def-text" style={{ color: "#ffffff" }}>{activeWord.definition}</p>
+                <p className="study-def-text" style={{ color: "#ffffff" }}>
+                  {activeWord.fusedWord ? activeWord.fusedDefinition : activeWord.definition}
+                </p>
               </div>
               {activeWord.fusedWord ? (
-                <div style={{ marginTop: "12px", borderTop: "1px solid rgba(255,255,255,0.25)", paddingTop: "8px" }}>
-                  <span style={{ fontSize: "9px", fontWeight: "800", color: "#fbbf24", display: "block" }}>IELTS LINKED VOCABULARY:</span>
-                  <span style={{ fontSize: "14px", fontWeight: "700", display: "block" }}>{activeWord.fusedWord} ({activeWord.fusedPronunciation})</span>
-                  <p style={{ fontSize: "11px", margin: "4px 0 0 0", color: "rgba(255,255,255,0.85)" }}>{activeWord.fusedDefinition}</p>
+                <div style={{ marginTop: "12px", borderTop: "1px solid rgba(255,255,255,0.25)", paddingTop: "8px", display: "flex", flexDirection: "column", gap: "4px" }}>
+                  <span style={{ fontSize: "9px", fontWeight: "800", color: "#fbbf24", display: "block" }}>BASIC WORD LINK:</span>
+                  <span style={{ fontSize: "14px", fontWeight: "700", display: "block" }}>{activeWord.word}</span>
+                  <p style={{ fontSize: "12px", margin: "4px 0 0 0", color: "rgba(255,255,255,0.85)" }}>{activeWord.definition}</p>
                 </div>
               ) : (
                 <div className="study-sentence-block">

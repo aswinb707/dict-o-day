@@ -675,8 +675,13 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
                               <span className="flip-hint" style={{ color: "rgba(255,255,255,0.6)" }}>tap to flip</span>
                             )}
                           </div>
-                          <h3 className="word-title" style={{ color: "#ffffff", textShadow: "0 1px 2px rgba(0,0,0,0.3)" }}>{w.word}</h3>
-                          <p className="word-pron" style={{ color: "rgba(255,255,255,0.7)" }}>/{w.pronunciation}/</p>
+                          <h3 className="word-title" style={{ color: "#ffffff", textShadow: "0 1px 2px rgba(0,0,0,0.3)" }}>{w.fusedWord ? w.fusedWord : w.word}</h3>
+                          <p className="word-pron" style={{ color: "rgba(255,255,255,0.7)" }}>/{w.fusedWord ? w.fusedPronunciation : w.pronunciation}/</p>
+                          {w.fusedWord && (
+                            <div className="fused-basic-info" style={{ margin: "4px 0", fontSize: "12px", opacity: 0.9, background: "rgba(0,0,0,0.2)", padding: "2px 8px", borderRadius: "4px", display: "inline-block" }}>
+                              Basic: <strong style={{ color: "#fbbf24" }}>{w.word}</strong>
+                            </div>
+                          )}
                           <div className="word-mastery">
                             <span className="mastery-label" style={{ color: "rgba(255,255,255,0.6)" }}>Mastery</span>
                             <span className="mastery-pct" style={{ color: "#ffffff" }}>{mastery}%</span>
@@ -734,12 +739,13 @@ export default function Dashboard({ userProfile, setUserProfile, loginDate, onLo
                               </button>
                             </div>
                           </div>
-                          <h3 className="word-title back-word" style={{ color: "#ffffff" }}>{w.word}</h3>
-                          <p className="word-def" style={{ color: "#ffffff", fontSize: "12.5px" }}>{w.definition}</p>
+                          <h3 className="word-title back-word" style={{ color: "#ffffff" }}>{w.fusedWord ? w.fusedWord : w.word}</h3>
+                          <p className="word-def" style={{ color: "#ffffff", fontSize: "12.5px" }}>{w.fusedWord ? w.fusedDefinition : w.definition}</p>
                           {w.fusedWord && (
-                            <div style={{ marginTop: "auto", borderTop: "1px solid rgba(255,255,255,0.2)", paddingTop: "6px" }}>
-                              <span style={{ fontSize: "9px", fontWeight: "800", color: "#fbbf24", display: "block" }}>IELTS LINK:</span>
-                              <span style={{ fontSize: "11px", fontWeight: "700", display: "block" }}>{w.fusedWord}</span>
+                            <div style={{ marginTop: "auto", borderTop: "1px solid rgba(255,255,255,0.2)", paddingTop: "6px", display: "flex", flexDirection: "column", gap: "2px" }}>
+                              <span style={{ fontSize: "9px", fontWeight: "800", color: "#fbbf24", display: "block" }}>BASIC WORD LINK:</span>
+                              <span style={{ fontSize: "11px", fontWeight: "700", display: "block" }}>{w.word}</span>
+                              <p style={{ fontSize: "10.5px", color: "rgba(255,255,255,0.85)", margin: 0 }}>{w.definition}</p>
                             </div>
                           )}
                           {!w.fusedWord && w.sentences && w.sentences[0] && (

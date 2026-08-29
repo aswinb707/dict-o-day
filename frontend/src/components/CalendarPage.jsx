@@ -172,7 +172,7 @@ export default function CalendarPage({ learnedWords, loginDate }) {
                   <p className="day-words-desc">You unlocked {selectedDateWords.length} words:</p>
                   {selectedDateWords.map((w) => (
                     <div key={w.id} className="day-word-pill">
-                      <span className="dw-name">{w.word}</span>
+                      <span className="dw-name">{w.fusedWord ? w.fusedWord : w.word}</span>
                       <span className="dw-pos">{w.pos}</span>
                     </div>
                   ))}

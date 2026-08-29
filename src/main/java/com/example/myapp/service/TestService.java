@@ -40,7 +40,12 @@ public class TestService {
         Test test = testRepository.findById(testId)
                 .orElseThrow(() -> new IllegalArgumentException("Test not found."));
         var word = wordService.getWordById(wordId);
-        boolean correct = word.getWord().equalsIgnoreCase(answer.trim());
+        boolean correct = false;
+        if (word.getFusedWord() != null && !word.getFusedWord().trim().isEmpty()) {
+            correct = word.getFusedWord().equalsIgnoreCase(answer.trim());
+        } else {
+            correct = word.getWord().equalsIgnoreCase(answer.trim());
+        }
         SessionWord sw = SessionWord.builder()
                 .sessionId(test.getSessionId()).wordId(wordId).mode("test")
                 .answeredCorrect(correct).timeTakenMs(timeTakenMs).build();

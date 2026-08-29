@@ -54,22 +54,26 @@ export default function Test({
     
     mcqWords.forEach((wordObj) => {
       // Pick 3 distractors
+      const isFused = !!wordObj.fusedWord;
+      const targetWord = isFused ? wordObj.fusedWord : wordObj.word;
+      const targetDefinition = isFused ? wordObj.fusedDefinition : wordObj.definition;
+
       const distractors = [...learnedWords, ...COMMON_DISTRACTORS.map((w, idx) => ({ id: idx, word: w }))]
-        .filter((w) => w.word.toLowerCase() !== wordObj.word.toLowerCase())
-        .map((w) => w.word)
+        .map((w) => w.fusedWord ? w.fusedWord : w.word)
+        .filter((wName) => wName.toLowerCase() !== targetWord.toLowerCase())
         .filter((val, i, self) => self.indexOf(val) === i)
         .sort(() => 0.5 - Math.random())
         .slice(0, 3);
 
-      const options = [wordObj.word, ...distractors].sort(() => 0.5 - Math.random());
+      const options = [targetWord, ...distractors].sort(() => 0.5 - Math.random());
 
       generatedQuestions.push({
         type: "mcq",
         wordId: wordObj.id,
-        word: wordObj.word,
-        definition: wordObj.definition,
-        questionText: `Which word matches the definition: "${wordObj.definition}"?`,
-        correctAnswer: wordObj.word,
+        word: targetWord,
+        definition: targetDefinition,
+        questionText: `Which word matches the definition: "${targetDefinition}"?`,
+        correctAnswer: targetWord,
         options,
       });
     });
@@ -83,21 +87,24 @@ export default function Test({
     const fitbFinalWords = fitbWords.length > 0 ? fitbWords : shuffledPool.slice(0, Math.min(3, shuffledPool.length));
 
     fitbFinalWords.forEach((wordObj) => {
-      // Pick a sentence from the sentences array
-      const sentence = (wordObj.sentences && wordObj.sentences.length > 0) 
-        ? wordObj.sentences[Math.floor(Math.random() * wordObj.sentences.length)]
-        : `An example sentence of ${wordObj.word}`;
+      const isFused = !!wordObj.fusedWord;
+      const targetWord = isFused ? wordObj.fusedWord : wordObj.word;
+      const sentence = isFused
+        ? wordObj.fusedSentence
+        : ((wordObj.sentences && wordObj.sentences.length > 0)
+          ? wordObj.sentences[Math.floor(Math.random() * wordObj.sentences.length)]
+          : `An example sentence of ${wordObj.word}`);
       
-      const regex = new RegExp(`\\b${wordObj.word}\\b`, "gi");
+      const regex = new RegExp(`\\b${targetWord}\\b`, "gi");
       const maskedSentence = sentence.replace(regex, "___________");
 
       generatedQuestions.push({
         type: "fitb",
         wordId: wordObj.id,
-        word: wordObj.word,
+        word: targetWord,
         sentence: maskedSentence,
         questionText: `Complete the sentence by filling in the learned vocabulary word:`,
-        correctAnswer: wordObj.word,
+        correctAnswer: targetWord,
       });
     });
 

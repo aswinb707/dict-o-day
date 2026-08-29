@@ -19,8 +19,17 @@ export default function JournalPage({ learnedWords, onWordSelect, onAddCustomWor
 
   const sortedAndFilteredWords = useMemo(() => {
     return [...learnedWords]
-      .filter((w) => w.word.toLowerCase().includes(searchTerm.toLowerCase()))
-      .sort((a, b) => a.word.localeCompare(b.word));
+      .filter((w) => {
+        const term = searchTerm.toLowerCase();
+        const matchesBasic = w.word.toLowerCase().includes(term);
+        const matchesFused = w.fusedWord ? w.fusedWord.toLowerCase().includes(term) : false;
+        return matchesBasic || matchesFused;
+      })
+      .sort((a, b) => {
+        const aWord = a.fusedWord ? a.fusedWord : a.word;
+        const bWord = b.fusedWord ? b.fusedWord : b.word;
+        return aWord.localeCompare(bWord);
+      });
   }, [learnedWords, searchTerm]);
 
   const handleAddSubmit = (e) => {
@@ -224,11 +233,16 @@ export default function JournalPage({ learnedWords, onWordSelect, onAddCustomWor
               onClick={() => onWordSelect(wordItem)}
             >
               <div className="journal-card-top">
-                <h3 className="journal-word-title">{wordItem.word}</h3>
+                <h3 className="journal-word-title">{wordItem.fusedWord ? wordItem.fusedWord : wordItem.word}</h3>
                 <span className="journal-pos-tag">{wordItem.pos}</span>
               </div>
-              <p className="journal-word-pron">/{wordItem.pronunciation}/</p>
-              <p className="journal-word-def">{wordItem.definition}</p>
+              <p className="journal-word-pron">/{wordItem.fusedWord ? wordItem.fusedPronunciation : wordItem.pronunciation}/</p>
+              <p className="journal-word-def">{wordItem.fusedWord ? wordItem.fusedDefinition : wordItem.definition}</p>
+              {wordItem.fusedWord && (
+                <div className="journal-basic-indicator" style={{ fontSize: "11px", color: "var(--text-3)", marginBottom: "8px" }}>
+                  Basic: <strong>{wordItem.word}</strong>
+                </div>
+              )}
               <div className="journal-mastery-indicator">
                 <span className="mastery-lbl">Mastery: {wordItem.mastery}%</span>
                 <div className="mini-track">
